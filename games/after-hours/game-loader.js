@@ -1,1 +1,13 @@
-(()=>{try{const parts=window.__AH_GAME_PARTS||[];if(parts.length!==12)throw new Error(`程式片段不完整：${parts.length}/12`);const source=parts.join('');window.__AH_GAME_PARTS=null;(0,eval)(source)}catch(err){console.error(err);const box=document.getElementById('error');if(box){box.classList.remove('hidden');box.textContent='遊戲程式載入失敗：'+(err&&err.message?err.message:String(err))}const loading=document.getElementById('loading');if(loading)loading.textContent='載入失敗，請重新整理頁面。'}})();
+(()=>{
+  const parts=window.__AH_GAME_PARTS||[];
+  try{
+    if(parts.length!==12) throw new Error(`遊戲程式載入不完整：${parts.length}/12`);
+    const code=parts.join('');
+    window.__AH_GAME_PARTS=[];
+    (0,eval)(code);
+  }catch(e){
+    console.error(e);
+    const el=document.getElementById('error');
+    if(el){el.classList.remove('hidden');el.textContent='遊戲程式載入失敗：'+e.message;}
+  }
+})();
