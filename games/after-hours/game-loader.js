@@ -2,6 +2,8 @@
   const parts=window.__AH_GAME_PARTS||[];
   const coverScripts=[
     'data/book-covers-1.js',
+    'data/cover-crimproc-red.js',
+    'data/cover-crimproc-white.js',
     'data/cover-civproc-blue.js',
     'data/cover-civproc-cream.js',
     'data/cover-const-2026.js',
