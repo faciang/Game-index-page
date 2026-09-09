@@ -7,11 +7,15 @@
     'data/covers-v2/group-2.js',
     'data/covers-v2/group-3.js',
     'data/covers-v2/group-4.js',
-    'data/covers-v2/group-5.js'
+    'data/covers-v2/group-5.js',
+    'data/cover-crimproc-red.js',
+    'data/cover-crimproc-white.js',
+    'data/cover-civproc-cream.js',
+    'data/cover-new-crim-blue.js'
   ];
   const loadScript=src=>new Promise((resolve,reject)=>{
     const s=document.createElement('script');
-    s.src=src+'?v=covers-v2-20260909a';
+    s.src=src+'?v=covers-v2-20260909d';
     s.onload=resolve;
     s.onerror=()=>reject(new Error('書封資源載入失敗：'+src));
     document.head.appendChild(s);
