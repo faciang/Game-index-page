@@ -199,6 +199,32 @@
   @keyframes retroBlink{50%{opacity:.22}}
   .retro-counter__since{color:#7d7d7d;font-size:9px;letter-spacing:.04em}
 
+
+  /* 玩家留言板 */
+  .guestbook{margin:26px 0 30px;padding:22px;border:1px solid rgba(255,201,77,.32);border-radius:18px;background:var(--ink-2)}
+  .guestbook h2{margin:0;color:var(--amber);font-size:22px}
+  .guestbook__sub{margin:3px 0 16px;color:var(--muted);font-size:13px}
+  .guestbook__form{display:grid;gap:10px}
+  .guestbook input,.guestbook textarea{width:100%;min-width:0;padding:11px 13px;background:var(--ink);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:var(--paper);font:16px var(--sans)}
+  .guestbook textarea{min-height:95px;resize:vertical}
+  .guestbook button{border:1px solid var(--line);border-radius:10px;padding:10px 15px;background:var(--amber);color:#20180a;font:700 14px var(--sans);cursor:pointer}
+  .guestbook button:disabled{opacity:.55;cursor:not-allowed}
+  .guestbook button:focus-visible,.guestbook input:focus-visible,.guestbook textarea:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  .guestbook__tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between}
+  .guestbook__tools small{color:var(--muted)}
+  .guestbook__status{color:var(--muted);font-size:13px;min-height:22px}
+  .guestbook__list{margin-top:17px;display:grid;gap:10px}
+  .guestbook__entry{background:var(--ink);border:1px solid var(--line);border-radius:12px;padding:13px 15px;overflow-wrap:anywhere}
+  .guestbook__entry header{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .guestbook__entry strong{color:var(--amber)}
+  .guestbook__entry time{font:11px var(--mono);color:var(--muted)}
+  .guestbook__entry p{white-space:pre-wrap;margin:9px 0 0;font-size:14px}
+  .guestbook__entry .guestbook__delete{background:transparent;color:#ff9797;border-color:#ff9797;padding:5px 9px}
+  .guestbook__admin{margin-top:16px;font-size:12px;color:var(--muted)}
+  .guestbook__admin button{background:transparent;color:var(--amber);padding:6px 10px}
+  .guestbook__uid{overflow-wrap:anywhere}
+  @media(max-width:480px){.guestbook{padding:16px}}
+
   footer{margin-top:18px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px}
   footer a{color:var(--amber);text-decoration:none}
 
@@ -216,6 +242,27 @@
       <p class="tagline">把我丟在 Threads 上的小遊戲全收在這，隨時回來玩。</p>
       <a class="marquee-link" href="https://www.threads.com/@faciang5566" target="_blank" rel="noopener">＠faciang5566 · 追蹤我的 Threads ↗</a>
     </header>
+
+
+    <section class="guestbook" aria-labelledby="guestbook-title">
+      <h2 id="guestbook-title">✦ 玩家留言板 <span aria-hidden="true">💬</span></h2>
+      <p class="guestbook__sub">GUESTBOOK · 玩完遊戲，留個言吧！不必註冊帳號。</p>
+      <form id="guestbook-form" class="guestbook__form">
+        <label for="guestbook-name">玩家暱稱</label>
+        <input id="guestbook-name" name="name" maxlength="20" required placeholder="例如：路過的民法戰士" autocomplete="nickname">
+        <label for="guestbook-message">留言內容</label>
+        <textarea id="guestbook-message" name="message" maxlength="300" required placeholder="分享心得、回報問題，或單純打個招呼…"></textarea>
+        <div class="guestbook__tools"><small>最多 300 字 · 請勿留下個人資料</small><button id="guestbook-submit" type="submit" disabled>連線中…</button></div>
+        <div id="guestbook-status" class="guestbook__status" role="status" aria-live="polite">正在連接留言板…</div>
+      </form>
+      <div id="guestbook-list" class="guestbook__list" aria-live="polite"></div>
+      <div class="guestbook__tools" style="margin-top:12px"><small id="guestbook-count"></small><button id="guestbook-more" type="button" hidden>載入更多留言 ↓</button></div>
+      <div class="guestbook__admin">
+        <button type="button" id="guestbook-login">管理員 Google 登入</button>
+        <button type="button" id="guestbook-logout" hidden>登出管理員</button>
+        <span id="guestbook-admin-status" class="guestbook__uid"></span>
+      </div>
+    </section>
 
     <div class="bar">
       <div class="search">
@@ -361,5 +408,89 @@ chips.addEventListener("click", e => {
 
 render();
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getAuth, signInAnonymously, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getFirestore, collection, query, orderBy, limit, startAfter, getDocs, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+const app = initializeApp({
+  apiKey:"AIzaSyCUtHObZC0UI4NTzhian32ZN1NcvkW6GdE",
+  authDomain:"game-board-1d89e.firebaseapp.com",
+  projectId:"game-board-1d89e",
+  storageBucket:"game-board-1d89e.firebasestorage.app",
+  messagingSenderId:"965597746571",
+  appId:"1:965597746571:web:6d0db56d48c44baf620b8e",
+  measurementId:"G-GRZ1RM6Q24"
+});
+const auth=getAuth(app), db=getFirestore(app), messages=collection(db,"messages");
+const $g=id=>document.getElementById(id);
+const status=$g("guestbook-status"), list=$g("guestbook-list"), submit=$g("guestbook-submit");
+let last=null, more=false, busy=false, adminUid=null;
+const ADMIN_UID = "vVZc5WkvFIad1yXFuz5nEr0rAml1"; // Firebase Google 管理員 UID
+function note(msg){status.textContent=msg}
+function dateText(v){const d=v?.toDate?.();return d?new Intl.DateTimeFormat("zh-TW",{dateStyle:"medium",timeStyle:"short"}).format(d):"剛剛"}
+function entry(snapshot){
+  const d=snapshot.data(), box=document.createElement("article");box.className="guestbook__entry";
+  const head=document.createElement("header"), name=document.createElement("strong"), time=document.createElement("time"), body=document.createElement("p");
+  name.textContent=String(d.name||"匿名玩家").slice(0,20);time.textContent=dateText(d.createdAt);
+  body.textContent=String(d.message||"").slice(0,300);
+  head.append(name,time);
+  if(adminUid && auth.currentUser?.uid===adminUid){
+    const del=document.createElement("button");del.type="button";del.className="guestbook__delete";del.textContent="刪除";
+    del.addEventListener("click",async()=>{if(!confirm("確定刪除這則留言？"))return;del.disabled=true;try{await deleteDoc(doc(db,"messages",snapshot.id));box.remove()}catch(e){del.disabled=false;note("刪除失敗，請確認管理員權限規則。")}});
+    head.append(del);
+  }
+  box.append(head,body);return box;
+}
+async function load(reset=false){
+  if(busy)return;busy=true;
+  try{
+    if(reset){last=null;list.replaceChildren()}
+    const parts=[orderBy("createdAt","desc"),limit(11)];
+    if(last)parts.unshift(startAfter(last));
+    const snap=await getDocs(query(messages,...parts));
+    const docs=snap.docs.slice(0,10);if(docs.length && list.textContent==="還沒有留言，等你來搶頭香！")list.replaceChildren();docs.forEach(d=>list.append(entry(d)));
+    more=snap.size>10;last=docs.at(-1)||last;
+    $g("guestbook-more").hidden=!more;
+    $g("guestbook-count").textContent=list.children.length+" 則留言已載入";
+    if(!list.children.length)list.textContent="還沒有留言，等你來搶頭香！";
+  }catch(e){note("讀取留言失敗，請檢查 Firestore 規則及網路連線。")}
+  finally{busy=false}
+}
+$g("guestbook-more").addEventListener("click",()=>load());
+$g("guestbook-form").addEventListener("submit",async e=>{
+  e.preventDefault();if(busy||!auth.currentUser)return;
+  const name=$g("guestbook-name").value.trim(),message=$g("guestbook-message").value.trim();
+  if(!name||name.length>20||!message||message.length>300){note("請填寫暱稱（20字內）與留言（300字內）。");return}
+  const prev=Number(localStorage.getItem("guestbook-last-post")||0);
+  if(Date.now()-prev<60000){note("請稍候一分鐘再留言。");return}
+  busy=true;submit.disabled=true;
+  try{
+    await addDoc(messages,{name,message,createdAt:serverTimestamp(),authorUid:auth.currentUser.uid});
+    localStorage.setItem("guestbook-last-post",String(Date.now()));
+    $g("guestbook-message").value="";note("留言成功！");
+    busy=false;await load(true);
+  }catch(err){note(err.code==="permission-denied"?"目前尚未開放留言，請等待站長完成安全規則設定。":"送出失敗，請稍後重試。")}
+  finally{busy=false;submit.disabled=false}
+});
+const provider=new GoogleAuthProvider();
+$g("guestbook-login").addEventListener("click",async()=>{
+  try{await signInWithPopup(auth,provider)}
+  catch(e){if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment"){await signInWithRedirect(auth,provider)}else{note("Google 登入失敗，請確認瀏覽器允許彈出視窗及授權網域。")}}
+});
+$g("guestbook-logout").addEventListener("click",async()=>{await signOut(auth);await signInAnonymously(auth)});
+onAuthStateChanged(auth,async user=>{
+  if(!user){try{await signInAnonymously(auth)}catch(e){note("匿名登入失敗，請檢查 Authentication 設定。")}return}
+  const google=!user.isAnonymous;
+  adminUid=ADMIN_UID||null;
+  $g("guestbook-login").hidden=google;$g("guestbook-logout").hidden=!google;
+  $g("guestbook-admin-status").textContent=google?("登入 UID："+user.uid+(user.uid===ADMIN_UID?"（管理員）":"（尚未授權管理權限）")):"";
+  submit.disabled=false;submit.textContent="▶ 發送留言";
+  note("留言板已連線。若無法發文，請先完成 Firestore 寫入規則設定。");
+  await load(true);
+});
+getRedirectResult(auth).catch(()=>note("登入跳轉失敗，請確認授權網域。"));
+</script>
+
 </body>
 </html>
