@@ -449,7 +449,7 @@ async function load(reset=false){
     const parts=[orderBy("createdAt","desc"),limit(11)];
     if(last)parts.unshift(startAfter(last));
     const snap=await getDocs(query(messages,...parts));
-    const docs=snap.docs.slice(0,10);docs.forEach(d=>list.append(entry(d)));
+    const docs=snap.docs.slice(0,10);if(docs.length && list.textContent==="還沒有留言，等你來搶頭香！")list.replaceChildren();docs.forEach(d=>list.append(entry(d)));
     more=snap.size>10;last=docs.at(-1)||last;
     $g("guestbook-more").hidden=!more;
     $g("guestbook-count").textContent=list.children.length+" 則留言已載入";
