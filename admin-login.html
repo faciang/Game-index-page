@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>好法遊戲區｜管理員登入測試</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#16141f;color:#f5eedf;font:16px/1.65 system-ui,"Noto Sans TC",sans-serif;min-height:100vh;display:grid;place-items:center;padding:20px}
+main{width:min(100%,460px);padding:28px 22px;border:1px solid #665633;border-radius:18px;background:#211e2b}h1{color:#ffc94d;margin:0 0 10px;font-size:24px}p{margin:10px 0}button{display:block;background:#ffc94d;color:#211800;border:0;border-radius:10px;font-size:16px;font-weight:700;padding:14px 20px;min-height:48px;margin:20px 0;cursor:pointer}button:disabled{opacity:.6}code{display:block;overflow-wrap:anywhere;background:#100f16;padding:12px;border-radius:8px;color:#ffe19c}small{color:#bcb4c6}a{color:#ffc94d}#uidbox[hidden]{display:none}
+</style></head><body><main>
+<h1>🎮 管理員登入測試</h1>
+<p>請使用建立 Firebase 專案的 Google 帳號登入，取得管理員 UID。</p>
+<button id="login" type="button" disabled>載入中…</button>
+<p id="status" role="status">正在初始化 Firebase…</p>
+<div id="uidbox" hidden><strong>你的 Firebase UID：</strong><code id="uid"></code><p><small>請複製這段 UID，回到 ChatGPT 告訴我。UID 不是密碼，但請勿提供登入密碼或驗證碼。</small></p></div>
+<p><small>這個測試頁面不會讀寫留言資料庫，也不會更動原本的遊戲清單。</small></p>
+<p><a href="./">← 回遊戲區</a></p>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+const app=initializeApp({apiKey:"AIzaSyCUtHObZC0UI4NTzhian32ZN1NcvkW6GdE",authDomain:"game-board-1d89e.firebaseapp.com",projectId:"game-board-1d89e",appId:"1:965597746571:web:6d0db56d48c44baf620b8e"});
+const auth=getAuth(app),provider=new GoogleAuthProvider();
+const btn=document.querySelector("#login"),status=document.querySelector("#status"),box=document.querySelector("#uidbox");
+btn.disabled=false;btn.textContent="使用 Google 登入";status.textContent="請按上方按鈕登入。";
+onAuthStateChanged(auth,user=>{if(user&&!user.isAnonymous){box.hidden=false;document.querySelector("#uid").textContent=user.uid;status.textContent="登入成功！";btn.textContent="切換 Google 帳號";provider.setCustomParameters({prompt:"select_account"});}});
+btn.addEventListener("click",async()=>{btn.disabled=true;status.textContent="正在開啟 Google 登入…";try{await signInWithPopup(auth,provider)}catch(e){status.textContent="登入失敗："+e.code+"。若手機封鎖彈出視窗，請允許彈出視窗後再試。";if(e.code==="auth/popup-blocked")try{await signInWithRedirect(auth,provider)}catch(err){status.textContent="跳轉登入失敗："+err.code}}finally{btn.disabled=false}});
+getRedirectResult(auth).catch(e=>{status.textContent="登入返回失敗："+e.code});
+</script></body></html>
