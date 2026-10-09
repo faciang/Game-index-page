@@ -254,6 +254,7 @@
         <textarea id="guestbook-message" name="message" maxlength="300" required placeholder="分享心得、回報問題，或單純打個招呼…"></textarea>
         <div class="guestbook__tools"><small>最多 300 字 · 請勿留下個人資料</small><button id="guestbook-submit" type="submit" disabled>連線中…</button></div>
         <div id="guestbook-status" class="guestbook__status" role="status" aria-live="polite">正在連接留言板…</div>
+        <button id="guestbook-retry" type="button" hidden>重新嘗試匿名登入</button>
       </form>
       <div id="guestbook-list" class="guestbook__list" aria-live="polite"></div>
       <div class="guestbook__tools" style="margin-top:12px"><small id="guestbook-count"></small><button id="guestbook-more" type="button" hidden>載入更多留言 ↓</button></div>
@@ -425,7 +426,7 @@ const app = initializeApp({
 const auth=getAuth(app), db=getFirestore(app), messages=collection(db,"messages");
 const $g=id=>document.getElementById(id);
 const status=$g("guestbook-status"), list=$g("guestbook-list"), submit=$g("guestbook-submit");
-let last=null, more=false, busy=false, adminUid=null;
+let last=null, more=false, busy=false, adminUid=null, reloadQueued=false;
 const ADMIN_UID = "vVZc5WkvFIad1yXFuz5nEr0rAml1"; // Firebase Google 管理員 UID
 function note(msg){status.textContent=msg}
 function dateText(v){const d=v?.toDate?.();return d?new Intl.DateTimeFormat("zh-TW",{dateStyle:"medium",timeStyle:"short"}).format(d):"剛剛"}
@@ -443,7 +444,7 @@ function entry(snapshot){
   box.append(head,body);return box;
 }
 async function load(reset=false){
-  if(busy)return;busy=true;
+  if(busy){if(reset)reloadQueued=true;return}busy=true;
   try{
     if(reset){last=null;list.replaceChildren()}
     const parts=[orderBy("createdAt","desc"),limit(11)];
@@ -455,7 +456,7 @@ async function load(reset=false){
     $g("guestbook-count").textContent=list.children.length+" 則留言已載入";
     if(!list.children.length)list.textContent="還沒有留言，等你來搶頭香！";
   }catch(e){note("讀取留言失敗，請檢查 Firestore 規則及網路連線。")}
-  finally{busy=false}
+  finally{busy=false;if(reloadQueued){reloadQueued=false;void load(true)}}
 }
 $g("guestbook-more").addEventListener("click",()=>load());
 $g("guestbook-form").addEventListener("submit",async e=>{
@@ -478,18 +479,50 @@ $g("guestbook-login").addEventListener("click",async()=>{
   try{await signInWithPopup(auth,provider)}
   catch(e){if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment"){await signInWithRedirect(auth,provider)}else{note("Google 登入失敗，請確認瀏覽器允許彈出視窗及授權網域。")}}
 });
-$g("guestbook-logout").addEventListener("click",async()=>{await signOut(auth);await signInAnonymously(auth)});
+const retry=$g("guestbook-retry");
+let anonymousLoginInProgress=false;
+function explainAuthError(err){
+  const code=err?.code||"unknown";
+  const hints={
+    "auth/operation-not-allowed":"Firebase Authentication 尚未啟用「匿名」登入方式，請開啟並儲存。",
+    "auth/admin-restricted-operation":"此 Firebase 專案目前不允許匿名登入，請確認 Authentication 的「匿名」登入方式。",
+    "auth/unauthorized-domain":"網站網域未獲授權，請檢查 Authentication 的已授權網域。",
+    "auth/network-request-failed":"無法連接 Firebase，請檢查網路或瀏覽器封鎖設定。",
+    "auth/too-many-requests":"Firebase 暫時限制登入次數，請稍後再試。",
+    "auth/invalid-api-key":"Firebase 設定的 API 金鑰無效。"
+  };
+  return "匿名登入失敗（"+code+"）。"+(hints[code]||"請將這組錯誤代碼告訴站長。")+" 不過仍可瀏覽公開留言。";
+}
+async function ensureAnonymous(){
+  if(auth.currentUser||anonymousLoginInProgress)return;
+  anonymousLoginInProgress=true;retry.hidden=true;retry.disabled=true;
+  note("正在以訪客身分連線…");
+  try{await signInAnonymously(auth)}
+  catch(err){submit.disabled=true;submit.textContent="暫時無法發文";note(explainAuthError(err));retry.hidden=false}
+  finally{anonymousLoginInProgress=false;retry.disabled=false}
+}
+retry.addEventListener("click",()=>{void ensureAnonymous()});
+$g("guestbook-logout").addEventListener("click",async()=>{try{await signOut(auth)}catch(e){note("登出失敗（"+(e.code||"unknown")+"）")}});
 onAuthStateChanged(auth,async user=>{
-  if(!user){try{await signInAnonymously(auth)}catch(e){note("匿名登入失敗，請檢查 Authentication 設定。")}return}
+  if(!user){
+    submit.disabled=true;submit.textContent="連線中…";
+    $g("guestbook-login").hidden=false;$g("guestbook-logout").hidden=true;
+    $g("guestbook-admin-status").textContent="";
+    void ensureAnonymous();
+    return;
+  }
+  retry.hidden=true;
   const google=!user.isAnonymous;
   adminUid=ADMIN_UID||null;
   $g("guestbook-login").hidden=google;$g("guestbook-logout").hidden=!google;
   $g("guestbook-admin-status").textContent=google?("登入 UID："+user.uid+(user.uid===ADMIN_UID?"（管理員）":"（尚未授權管理權限）")):"";
   submit.disabled=false;submit.textContent="▶ 發送留言";
-  note("留言板已連線。若無法發文，請先完成 Firestore 寫入規則設定。");
+  note("留言板已連線，可以發送留言。");
   await load(true);
 });
-getRedirectResult(auth).catch(()=>note("登入跳轉失敗，請確認授權網域。"));
+// 公開留言不需要先完成 Authentication，也能直接讀取。
+void load(true);
+getRedirectResult(auth).catch(e=>note("Google 登入跳轉失敗（"+(e.code||"unknown")+"）"));
 </script>
 
 </body>
