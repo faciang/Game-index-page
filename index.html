@@ -410,9 +410,9 @@ render();
 </script>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import { getAuth, signInAnonymously, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
-import { getFirestore, collection, query, orderBy, limit, startAfter, getDocs, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getAuth, signInAnonymously, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getFirestore, collection, query, orderBy, limit, startAfter, getDocs, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 const app = initializeApp({
   apiKey:"AIzaSyCUtHObZC0UI4NTzhian32ZN1NcvkW6GdE",
   authDomain:"game-board-1d89e.firebaseapp.com",
@@ -426,7 +426,7 @@ const auth=getAuth(app), db=getFirestore(app), messages=collection(db,"messages"
 const $g=id=>document.getElementById(id);
 const status=$g("guestbook-status"), list=$g("guestbook-list"), submit=$g("guestbook-submit");
 let last=null, more=false, busy=false, adminUid=null;
-const ADMIN_UID = ""; // 管理員首次登入後，填入 Firebase Authentication 的 Google 使用者 UID。
+const ADMIN_UID = "vVZc5WkvFIad1yXFuz5nEr0rAml1"; // Firebase Google 管理員 UID
 function note(msg){status.textContent=msg}
 function dateText(v){const d=v?.toDate?.();return d?new Intl.DateTimeFormat("zh-TW",{dateStyle:"medium",timeStyle:"short"}).format(d):"剛剛"}
 function entry(snapshot){
