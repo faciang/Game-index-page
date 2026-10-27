@@ -244,27 +244,6 @@
     </header>
 
 
-    <section class="guestbook" aria-labelledby="guestbook-title">
-      <h2 id="guestbook-title">✦ 玩家留言板 <span aria-hidden="true">💬</span></h2>
-      <p class="guestbook__sub">GUESTBOOK · 玩完遊戲，留個言吧！不必註冊帳號。</p>
-      <form id="guestbook-form" class="guestbook__form">
-        <label for="guestbook-name">玩家暱稱</label>
-        <input id="guestbook-name" name="name" maxlength="20" required placeholder="例如：路過的民法戰士" autocomplete="nickname">
-        <label for="guestbook-message">留言內容</label>
-        <textarea id="guestbook-message" name="message" maxlength="300" required placeholder="分享心得、回報問題，或單純打個招呼…"></textarea>
-        <div class="guestbook__tools"><small>最多 300 字 · 請勿留下個人資料</small><button id="guestbook-submit" type="submit" disabled>連線中…</button></div>
-        <div id="guestbook-status" class="guestbook__status" role="status" aria-live="polite">正在連接留言板…</div>
-        <button id="guestbook-retry" type="button" hidden>重新嘗試匿名登入</button>
-      </form>
-      <div id="guestbook-list" class="guestbook__list" aria-live="polite"></div>
-      <div class="guestbook__tools" style="margin-top:12px"><small id="guestbook-count"></small><button id="guestbook-more" type="button" hidden>載入更多留言 ↓</button></div>
-      <div class="guestbook__admin">
-        <button type="button" id="guestbook-login">管理員 Google 登入</button>
-        <button type="button" id="guestbook-logout" hidden>登出管理員</button>
-        <span id="guestbook-admin-status" class="guestbook__uid"></span>
-      </div>
-    </section>
-
     <div class="bar">
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
@@ -289,6 +268,27 @@
       <span class="retro-counter__blink">THANKS!</span>
       <span class="retro-counter__since">SINCE 2026</span>
     </div>
+    <section class="guestbook" aria-labelledby="guestbook-title">
+      <h2 id="guestbook-title">✦ 玩家留言板 <span aria-hidden="true">💬</span></h2>
+      <p class="guestbook__sub">GUESTBOOK · 玩完遊戲，留個言吧！不必註冊帳號。</p>
+      <form id="guestbook-form" class="guestbook__form">
+        <label for="guestbook-name">玩家暱稱</label>
+        <input id="guestbook-name" name="name" maxlength="20" required placeholder="例如：路過的民法戰士" autocomplete="nickname">
+        <label for="guestbook-message">留言內容</label>
+        <textarea id="guestbook-message" name="message" maxlength="300" required placeholder="分享心得、回報問題，或單純打個招呼…"></textarea>
+        <div class="guestbook__tools"><small>最多 300 字 · 請勿留下個人資料</small><button id="guestbook-submit" type="submit" disabled>連線中…</button></div>
+        <div id="guestbook-status" class="guestbook__status" role="status" aria-live="polite">正在連接留言板…</div>
+        <button id="guestbook-retry" type="button" hidden>重新嘗試匿名登入</button>
+      </form>
+      <div id="guestbook-list" class="guestbook__list" aria-live="polite"></div>
+      <div class="guestbook__tools" style="margin-top:12px"><small id="guestbook-count"></small><button id="guestbook-more" type="button" hidden>載入更多留言 ↓</button></div>
+      <div class="guestbook__admin">
+        <button type="button" id="guestbook-login">管理員 Google 登入</button>
+        <button type="button" id="guestbook-logout" hidden>登出管理員</button>
+        <span id="guestbook-admin-status" class="guestbook__uid"></span>
+      </div>
+    </section>
+
     <footer>好法遊戲區 · made with ♥ on GitHub Pages</footer>
   </main>
 
