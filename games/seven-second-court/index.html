@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/><meta content="width=device-width, initial-scale=1" name="viewport"/><meta content="#18252b" name="theme-color"/><title>七秒開庭｜舉證責任挑戰</title><meta content="20題民事題庫，每局隨機6案，7秒整理爭點。你是法官，誰該舉證？" name="description"/><style>:root{--bg:#101c22;--panel:#1b2c32;--line:#3c4c4c;--muted:#a7b6b3;--ink:#edf0de;--gold:#efc778;--mint:#9ac7b2;--red:#f39c85}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}button,a{touch-action:manipulation}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:4px}header{max-width:1080px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:24px 28px}.brand{display:flex;gap:12px;align-items:center;text-decoration:none;color:var(--ink);font-size:20px;font-weight:750;letter-spacing:3px}.brand small{display:block;font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px}.brandmark{display:grid;place-items:center;width:40px;height:40px;background:var(--gold);color:var(--bg);border:3px double var(--bg);font-family:serif}.head-actions{display:flex;gap:8px}.quiet{background:transparent;border:1px solid var(--line);color:var(--muted);padding:8px 12px;border-radius:4px}.quiet:hover{color:var(--ink);border-color:var(--gold)}main{max-width:1024px;margin:0 auto;padding:0 24px}.stage{border:1px solid #596057;background:#253b3b;position:relative;box-shadow:0 10px 40px #0003}.stage-top{display:flex;justify-content:space-between;font-size:11px;letter-spacing:2px;padding:10px 16px;background:#263735;color:#d8dbc4}.stage-top i{display:inline-block;width:6px;height:6px;background:var(--mint);margin-right:8px}.stage-top b{color:var(--gold);margin-left:8px}canvas{width:100%;height:auto;display:block;image-rendering:pixelated}.names{position:absolute;left:0;right:0;bottom:38px;display:flex;justify-content:space-around;font-size:11px;letter-spacing:2px}.names span{background:#111d22d9;padding:4px 12px;border-bottom:2px solid #d2b173}.stage-caption{text-align:center;background:#263735;color:#d4d7bd;padding:9px;font-size:12px;border-top:1px solid #7f785b}#screen{padding:28px 0 12px}.eyebrow{color:var(--gold);letter-spacing:3px;font-size:11px;font-weight:700;margin-bottom:10px}h1{font-size:42px;letter-spacing:3px;line-height:1.3;margin:0 0 14px}h2{font-size:26px;margin:0 0 12px;letter-spacing:1px}h3{font-size:16px;margin:0 0 8px}p{line-height:1.8;margin:8px 0;color:#d3dcd1}.intro{display:grid;grid-template-columns:1.3fr 1fr;gap:50px}.intro-copy>p{max-width:510px;color:var(--muted)}.gold{color:var(--gold)}.primary,.secondary{padding:13px 22px;border:0;font-weight:750;letter-spacing:1px;border-radius:3px}.primary{background:var(--gold);color:#26302b;box-shadow:0 3px 0 #9f7f44}.primary:hover{background:#ffdb93}.secondary{background:#2d4446;color:var(--ink);border:1px solid #64746b}.buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.rules{border-left:1px solid var(--line);padding-left:28px}.rule{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid #33453f}.rule b{font-family:monospace;color:var(--gold);font-size:20px}.rule strong{display:block;font-size:14px}.rule small{display:block;color:var(--muted);margin-top:4px;line-height:1.6}.tiny{font-size:12px;color:var(--muted);line-height:1.7}.casehead{display:flex;justify-content:space-between;align-items:center;gap:14px}.badge{color:var(--gold);font-family:monospace;font-size:13px}.stat{font-size:13px;color:var(--mint)}.testimony{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}.speech{padding:17px 20px;background:var(--panel);border:1px solid var(--line);border-top:3px solid #9ebcb6}.speech.plaintiff{border-top-color:var(--gold)}.speech label{font-size:11px;color:var(--mint);letter-spacing:3px}.speech.plaintiff label{color:var(--gold)}.speech p{font-size:16px;margin:8px 0 0;line-height:1.65}.base{background:#243536;padding:12px 16px;border-left:2px solid #6f8b7c;font-size:13px;line-height:1.8;color:#bfcac2}.steps{display:flex;gap:8px;margin:20px 0 16px}.step{flex:1;color:#8c9e97;border-top:2px solid #3a4d47;padding-top:8px;font-size:12px}.step.active{color:var(--gold);border-color:var(--gold)}.step.done{color:var(--mint);border-color:var(--mint)}.questionhead{display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px}.questionhead h2{margin:0;font-size:23px}.timer{font:700 24px monospace;color:var(--gold)}.timer.urgent{color:var(--red)}.track{height:4px;background:#35443f;margin:12px 0 16px}.fill{height:100%;background:var(--gold);transform-origin:left}.options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.option{display:flex;align-items:center;gap:12px;text-align:left;background:#24393d;color:var(--ink);border:1px solid #607069;border-radius:3px;min-height:78px;padding:16px;font-size:16px;line-height:1.4}.option:hover{border-color:var(--gold);background:#334844}.key{display:grid;place-items:center;flex-shrink:0;width:24px;height:24px;background:#14282c;color:var(--gold);font:12px monospace}.chosen{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:12px}.chosen span{background:#263a38;padding:6px 10px}.dialogue{border:1px solid var(--line);background:var(--panel);padding:20px;margin:16px 0}.dialogue .line{margin:12px 0;display:grid;grid-template-columns:62px 1fr;gap:10px;line-height:1.8}.line b{color:var(--gold);font-size:13px}.line span{font-size:15px}.verdict{border:1px solid #9fa788;padding:20px;background:#2e413b;margin:16px 0}.verdict.bad{border-color:#bb7c6d;background:#3b302e}.resulttitle{font-size:22px;color:var(--gold);font-weight:750;margin:8px 0}.checks{display:flex;gap:8px;flex-wrap:wrap}.checks span{font-size:12px;padding:5px 9px;background:#152925}.checks .bad{background:#4b322e;color:#ffc8b7}.source{color:#b5cbbb;text-decoration:underline;font-size:12px;display:block;margin:8px 0}.review-row{border:1px solid var(--line);margin:8px 0;background:var(--panel)}.review-row summary{padding:15px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;line-height:1.5}.review-row .body{padding:0 18px 18px}.score{font:700 72px monospace;color:var(--gold)}.score small{font-size:22px;color:var(--muted)}footer{display:flex;justify-content:space-between;color:#8a9b93;letter-spacing:1px;font-size:10px;border-top:1px solid #33463e;padding:18px 0 24px;margin-top:28px}dialog{background:var(--panel);color:var(--ink);border:1px solid var(--gold);padding:28px;max-width:min(90vw,620px);max-height:85dvh;overflow:auto;border-radius:4px}dialog::backdrop{background:#071015dd}dialog p{font-size:14px}dialog .primary{margin-top:18px}[hidden]{display:none!important}@media(min-width:900px){canvas{max-height:310px}.names{bottom:40px}}@media(max-width:600px){header{padding:16px}.brand{font-size:16px;gap:8px}.brand small{font-size:7px;letter-spacing:1px}.brandmark{width:32px;height:32px}.quiet{font-size:12px;padding:7px 8px}.head-actions{gap:5px}main{padding:0 14px}.stage-top{font-size:9px;padding:8px;letter-spacing:1px}.stage-caption{font-size:10px;padding:7px}.names{bottom:30px;font-size:9px}.names span{padding:3px 7px}.intro{grid-template-columns:1fr;gap:24px}h1{font-size:34px}.rules{padding-left:0;border-left:0}.rule{padding:9px 0}#screen{padding-top:21px}h2{font-size:23px}.testimony{gap:8px;margin:12px 0}.speech{padding:11px}.speech p{font-size:14px;line-height:1.65}.base{padding:9px 12px;font-size:12px}.options{grid-template-columns:1fr;gap:8px}.option{min-height:54px;padding:12px 14px;font-size:15px}.questionhead h2{font-size:20px}.steps{margin:14px 0 12px}.step{font-size:11px}.casehead{align-items:flex-start}.dialogue{padding:12px}.dialogue .line{grid-template-columns:48px 1fr;gap:6px}.line span{font-size:14px}.buttons{margin-top:16px}.primary,.secondary{padding:12px 16px;font-size:14px}.score{font-size:60px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+@keyframes testimony-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}.dialogue .line{animation:testimony-in .35s both}.dialogue .line:nth-child(2){animation-delay:.4s}.dialogue .line:nth-child(3){animation-delay:.8s}.dialogue .line:nth-child(4){animation-delay:1.2s}@media(prefers-reduced-motion:reduce){.dialogue .line{animation:none}}
+.clockgroup{display:flex;align-items:center;gap:10px}.clockgroup .quiet{padding:5px 9px;font-size:14px}.timer{min-width:46px;text-align:right}
+</style></head><body>
+<header><a class="brand" href="./"><span class="brandmark">衡</span><span>七秒開庭<small>THE BURDEN OF PROOF</small></span></a><div class="head-actions"><button aria-label="切換音效" class="quiet" id="sound">音效 關</button><button class="quiet" hidden="" id="pause">暫停</button><button class="quiet" id="help">玩法</button></div></header>
+<main><section class="stage"><div class="stage-top"><span><i></i> 民事法庭 <b>01</b></span><span id="case-count">COURT IS IN SESSION</span></div><canvas aria-label="像素法庭，中間為穿黑底藍邊法袍的法官，左為被告，右為原告" height="230" id="court" width="640"></canvas><div class="names"><span>被告</span><span>法官 · 你</span><span>原告</span></div><div class="stage-caption" id="caption">卷宗已送達。今天隨機抽出的六件案件，交給你了。</div></section>
+<section aria-live="polite" id="screen"><div class="intro"><div class="intro-copy"><div class="eyebrow">20 CASES · DRAW 6 · 7 SECONDS</div><h1>請問，<br/>這件事<span class="gold">誰要證明？</span></h1><p>原告說有，被告說沒有。<br/>找出真正的爭點，別讓舉證責任走錯邊。</p><div class="buttons"><button class="primary" id="start">正式開庭 <span aria-hidden="true">→</span></button><button class="secondary" id="practice">不限時練習</button></div><p class="tiny">讀完案情再開始。20題題庫，每局隨機抽6題、不重複；每案3次選擇。</p></div><div class="rules"><div class="rule"><b>01</b><div><strong>整理爭點</strong><small>兩造到底在爭什麼？</small></div></div><div class="rule"><b>02</b><div><strong>鎖定關鍵事實</strong><small>什麼事實，才真正影響請求？</small></div></div><div class="rule"><b>03</b><div><strong>分配舉證責任</strong><small>調查後仍不明，誰承擔不利益？</small></div></div><p class="tiny">每局6案，滿分60分。勝敗碰巧相同，不等於理由正確。<br/>7秒是遊戲規則，實際審理仍須充分調查與辯論。</p></div></div></section><footer><span>TAIWAN CIVIL COURT · 模擬法庭</span><span>faciang5566</span></footer></main>
+<dialog id="modal"><div id="modal-body"></div><button class="primary" id="close-modal">回到法庭</button></dialog><script>const SOURCES={procedure:{name:'民事訴訟法第277、279條',url:'https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0010001'},loan:{name:'臺北地院113年度訴字第3600號（援引最高法院109台上711、98台上1045）',url:'https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=TPDV%2C113%2C%E8%A8%B4%2C3600%2C20251210%2C1'},pay:{name:'臺灣高等法院110年度上字第70號（援引最高法院109台上1329）',url:'https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=TPHV%2C110%2C%E4%B8%8A%2C70%2C20220104%2C2'},land:{name:'新北地院113年度訴字第1599號',url:'https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=PCDV%2C113%2C%E8%A8%B4%2C1599%2C20250529%2C1'},tort:{name:'臺灣高等法院110年度上易字第335號（援引最高法院100台上328）',url:'https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=TPHV%2C110%2C%E4%B8%8A%E6%98%93%2C335%2C20220830%2C1'},civil:{name:'民法第309、343、345、367、474、767條等',url:'https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=B0000001'}};
+// truth: U=調查後仍不明、T=證明／自認。support 表示該事實在玩家推論中有利的一方。
+const fact=(text,truth,support,evidence)=>({text,truth,support,evidence});
+const CASES=[
+{title:'匯款的另一種意思',tag:'借款・成立',p:'我匯了10萬元借給他，約定上個月還，請求返還借款。',d:'錢有收到，但那是你送我的，根本沒有說要借。',base:'原告僅依消費借貸請求。收款不爭執；不涉及票據、其他請求權或舉證責任調整。',issues:['借貸合意是否存在','被告是否已清償借款','被告是否有還款能力'],facts:[fact('雙方約定這筆錢要返還','U','P','匯款紀錄只能確認交付；對話只有「錢收到了」。調查所有證據後，仍無法確認借貸合意。'),fact('原告曾匯款10萬元','T','P','銀行紀錄與被告陳述均確認收款，但交付原因仍有爭執。'),fact('被告收入足以還款','U','P','卷內沒有被告收入資料；收入也不是借貸成立要件。')],burden:'P',winner:'D',reason:'原告須證明借貸合意與交付。收款已無爭執，但借貸合意仍不明，原告應承擔不利益；不能因被告證明不了贈與，就反推借貸成立。',sources:['loan','procedure']},
+{title:'借到了，還是沒拿到？',tag:'借款・交付',p:'他答應借5萬元，我也給了，現在到期請他還。',d:'是談好要借，但你從來沒把錢交給我。',base:'借貸合意不爭執。原告主張現金交付，請求返還5萬元，無其他請求基礎。',issues:['借款是否實際交付','借款是否已經清償','借款人是否有工作'],facts:[fact('原告已將5萬元交給被告','U','P','原告只提出自己的提款紀錄；沒有收款文字或其他補強。綜合調查後，交付仍真偽不明。'),fact('雙方曾談妥借款5萬元','T','P','雙方均承認借款約定，但談妥不代表金錢已交付。'),fact('原告曾領出5萬元','T','P','提款紀錄為真，但領款不當然等於交給被告。')],burden:'P',winner:'D',reason:'消費借貸的成立須有借貸合意及金錢交付。提款只能作為間接證據；本題設定綜合證據仍不足以證明交付，應由原告承擔不利益。',sources:['loan','procedure']},
+{title:'「我早就還了！」',tag:'清償・真偽不明',p:'他借的8萬元已到期，還沒有還。',d:'借款、收款、到期都承認，但我上週現金還清了。',base:'兩造對借款成立及到期均無爭執。唯一爭執為被告所稱現金還款。',issues:['借款是否因清償而消滅','原先有沒有借貸合意','原告有沒有催討'],facts:[fact('被告已返還本件8萬元','U','D','被告沒有收據；所傳證人只聽被告事後轉述。調查後仍不能確認清償。'),fact('原告沒有再次寄發催告','T','D','確實沒有再次催告；本件債務已到期，不因未再催告而消滅。'),fact('原告原先交付過借款','T','P','被告於言詞辯論明確承認原先收到借款。')],burden:'D',winner:'P',reason:'借款成立與到期既無爭執，主張債務因清償消滅的被告，應證明清償。清償仍不明時，被告承擔不利益。',sources:['pay','procedure']},
+{title:'收據終於找到了',tag:'清償・證據充分',p:'3萬元借款已到期，我要求返還。',d:'我已還清，而且留有你簽的收據。',base:'借款成立、到期不爭執。僅爭執是否已清償；不涉及其他欠款。',issues:['本件借款是否已清償','雙方是否曾有借貸合意','被告是否仍保管借據'],facts:[fact('被告已清償本件3萬元','T','D','收據明載本件借款已全數清償；原告承認簽名，銀行入帳與日期金額相符，無反證。'),fact('原告仍持有原來的借據','T','P','原告保留借據，但有可信的清償收據及入帳資料。'),fact('雙方曾成立借款契約','T','P','雙方承認原先借款，不能因此排除日後已還款。')],burden:'D',winner:'D',reason:'被告就清償負舉證責任，但不代表被告必然敗訴。本題清償已獲證明，債務消滅；原告仍持有借據，不會推翻全部證據的判斷。',sources:['pay','civil']},
+{title:'相機是賣的嗎？',tag:'買賣・合意',p:'我把相機賣他2萬元，也交了貨，請付價金。',d:'你只是借我相機拍照，沒說要賣。',base:'交付相機無爭執。原告僅請求買賣價金，未請求返還相機。',issues:['有無買賣及價金合意','借用期間是否屆滿','相機交付後是否損壞'],facts:[fact('雙方同意以2萬元買賣','U','P','只有相機交付照片，對話未提買賣或價金；調查後仍無法確認買賣合意。'),fact('被告已拿到相機','T','P','交付相機已承認，但交付也可能出於借用。'),fact('被告使用相機拍照','T','P','被告承認使用相機，仍不能直接證明買賣成立。')],burden:'P',winner:'D',reason:'請求買賣價金者須證明買賣合意及約定價金。單憑交付、使用尚不足以成立本件價金請求；其他返還請求不在本題範圍。',sources:['procedure','civil']},
+{title:'地主與口頭租約',tag:'返還土地・權源',p:'這塊地是我的，被告占著不走，請求返還。',d:'地是你的、也是我在用，但你曾口頭租給我，租期還沒到。',base:'所有權、被告占有及範圍均不爭執。被告僅主張直接向原告承租，無其他占有權源。',issues:['被告是否有占有權源','原告是否為土地所有人','土地目前市價多少'],facts:[fact('兩造成立仍有效的租約','U','D','被告提出自行記載的租金帳本，原告否認；無其他佐證，租約成立仍不明。'),fact('原告確為土地所有人','T','P','登記資料與兩造陳述一致，所有權已不爭執。'),fact('被告長期使用這塊土地','T','D','長期使用本身不等於成立租約，本題也無其他權源。')],burden:'D',winner:'P',reason:'在所有權及占有已無爭執、被告僅以租賃權源抗辯的前提下，應由被告證明租約成立。權源仍不明，返還請求應准許。',sources:['land','civil']},
+{title:'刮痕與隔壁的人',tag:'侵權・行為人',p:'他故意拿鑰匙刮我的腳踏車，修理費2千元，請求賠償。',d:'車不是我刮的，不能因為我站在旁邊就算我的。',base:'僅依民法184條第1項前段請求。損害金額不爭執；無法定推定或舉證責任調整。',issues:['被告是否為刮車行為人','修理費是否已付清','被告是否有不在場證明'],facts:[fact('被告故意刮傷原告的車','U','P','照片只拍到被告站在車旁，沒有拍到刮車；無其他證據足認行為人，調查後仍不明。'),fact('原告確實支付2千元修理費','T','P','修理單及付款紀錄為真，但不能證明是誰造成刮痕。'),fact('被告無法證明自己不在場','T','P','沒有不在場證明，不等於已證明被告刮車。')],burden:'P',winner:'D',reason:'原告須證明被告的侵害行為等成立要件。損害存在、被告在旁或提不出不在場證明，都不能直接取代行為人的證明。',sources:['tort','procedure']},
+{title:'當庭承認的貨款',tag:'自認・免證',p:'他買的書已交付，約定價金6千元，昨天到期，尚未付款。',d:'買書、價金、收貨、到期、沒付錢，我都承認，只是現在沒錢。',base:'被告在言詞辯論時明確承認全部要件事實，沒有撤銷自認或其他抗辯。',issues:['自認的事實是否仍須證明','被告是否具備付款能力','原告是否須另提書面契約'],facts:[fact('買賣、交付、到期及未付款','T','P','言詞辯論筆錄記載被告明確自認上述事實，無撤銷自認問題。'),fact('被告現在沒有足夠存款','T','D','經濟困難不使已到期價金債務消滅。'),fact('原告沒有簽署書面契約','T','D','本件買賣不以書面為成立要件，且要件事實已自認。')],burden:'N',winner:'P',reason:'訴訟上自認的事實無庸舉證。本題全部請求要件事實已自認；暫時沒錢不影響給付義務。免證是針對事實，不是法律見解。',sources:['procedure','civil']},
+{title:'明明說好不用還',tag:'免除・消滅事由',p:'5萬元借款已到期，被告沒還，請求返還。',d:'借款都承認，但你後來說這5萬元不用還了。',base:'借款成立、交付、到期及未清償無爭執。被告主張原告曾向其表示免除全部債務。',issues:['債權人是否免除債務','借款當初是否交付','原告後來是否生氣'],facts:[fact('原告向被告表示免除債務','U','D','對話僅寫「以後再說」，沒有其他證據；調查後無法確認有免除意思表示。'),fact('原告曾說「以後再說」','T','D','這句話已確認，但依本題全部語境不足以認定免除，也無延後到期的合意。'),fact('原告起訴前曾經生氣','T','D','情緒不能證明債權人已免除債務。')],burden:'D',winner:'P',reason:'免除屬債務消滅事由，由主張免除的被告證明。不能將含糊語句直接當作免除；本題也已排除另有展延到期日合意。',sources:['procedure','civil']},
+{title:'收據上是另一筆',tag:'清償・款項對應',p:'他積欠3月租金1萬元，已到期，請求給付。',d:'租約、租金、到期都承認，我有1萬元的收據，已經付了。',base:'兩造另有2月租金；唯一爭執為3月租金是否清償，未主張抵銷。',issues:['3月租金是否已清償','租賃關係是否成立','有沒有任何付款紀錄'],facts:[fact('被告已支付本件3月租金','U','D','被告收據明載2月租金，沒有3月的付款證據；調查後3月清償仍不明。'),fact('被告曾付過1萬元','T','D','確實付過，但收據指向2月，不能證明本件3月債務消滅。'),fact('雙方成立每月1萬元的租約','T','P','租約與到期均不爭執；爭點是本期租金是否付過。')],burden:'D',winner:'P',reason:'主張清償須證明付款與本件債務的對應。別期租金收據不能當成本期付款證明；3月清償真偽不明，由被告承擔不利益。',sources:['pay','procedure']}
+];
+
+Object.assign(SOURCES,{"billCause": {"name": "臺北簡易庭112年度北簡字第5555號（原因關係確立後依該關係分配舉證責任）", "url": "https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=TPEV%2C112%2C%E5%8C%97%E7%B0%A1%2C5555%2C20240528%2C1"}, "billSign": {"name": "臺北簡易庭112年度北簡字第3995號（本票真正由執票人證明）", "url": "https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=TPEV%2C112%2C%E5%8C%97%E7%B0%A1%2C3995%2C20230922%2C1"}, "billPay": {"name": "新北地院113年度訴字第1882號（發票人主張清償的舉證責任）", "url": "https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=PCDV%2C113%2C%E8%A8%B4%2C1882%2C20241122%2C1"}, "workDone": {"name": "彰化簡易庭111年度彰簡字第420號（工作完成、交付與報酬）", "url": "https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=CHEV%2C111%2C%E5%BD%B0%E7%B0%A1%2C420%2C20230420%2C1"}, "workExtra": {"name": "臺灣高等法院111年度上易字第892號（追加承攬合意）", "url": "https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=TPHV%2C111%2C%E4%B8%8A%E6%98%93%2C892%2C20230510%2C1"}, "workDefect": {"name": "高雄高分院112年度上易字第208號（定作人須證明瑕疵）", "url": "https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=KSHV%2C112%2C%E4%B8%8A%E6%98%93%2C208%2C20241028%2C1"}, "saleDefect": {"name": "新竹地院114年度重訴字第60號（瑕疵須於危險移轉時存在）", "url": "https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=SCDV%2C114%2C%E9%87%8D%E8%A8%B4%2C60%2C20250918%2C1"}, "mortgage": {"name": "臺北地院114年度訴更一字第9號（援引最高法院110台上531：登記不等於已交付款項）", "url": "https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=TPDV%2C114%2C%E8%A8%B4%E6%9B%B4%E4%B8%80%2C9%2C20251204%2C2"}, "mortgagePay": {"name": "高雄地院109年度重訴字第260號（債權發生與清償分別分配）", "url": "https://judgment.judicial.gov.tw/FJUD/printData.aspx?id=KSDV%2C109%2C%E9%87%8D%E8%A8%B4%2C260%2C20220831%2C2"}, "billLaw": {"name": "票據法第5、13條等", "url": "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0380028"}});
+CASES.push(...[
+  {
+    "title": "本票上的名字是誰寫的？",
+    "tag": "票據・形式真正",
+    "p": "本票不是我簽的，請確認被告對我的本票債權不存在。",
+    "d": "我持有這張本票，上面有你的名字，你應該負責。",
+    "base": "原告否認簽名真正；無印章、代理或追認問題。確認利益具備，不涉及簽名已證明後的原因抗辯。",
+    "issues": [
+      "本票是否由原告本人簽發",
+      "原告是否已償還票款",
+      "執票人是否曾聲請本票裁定"
+    ],
+    "facts": [
+      {
+        "text": "本票簽名確為原告所簽",
+        "truth": "U",
+        "support": "D",
+        "evidence": "原本送鑑定仍無法確認筆跡，亦無見證人或其他佐證。綜合調查後簽名真正仍不明。"
+      },
+      {
+        "text": "被告確實持有本票原本",
+        "truth": "T",
+        "support": "D",
+        "evidence": "持有原本不等於證明其上簽名出於原告。"
+      },
+      {
+        "text": "原告沒有先提偽造刑事告訴",
+        "truth": "T",
+        "support": "D",
+        "evidence": "未提刑事告訴，不能取代執票人對本票真正的證明。"
+      }
+    ],
+    "burden": "D",
+    "winner": "P",
+    "reason": "否認本票簽名真正時，應由執票人證明真正。執票人在本案是被告；未能證明，不能僅憑票上姓名要求原告負票據責任。",
+    "sources": [
+      "billSign",
+      "procedure",
+      "billLaw"
+    ]
+  },
+  {
+    "title": "簽了本票，借款卻沒進來",
+    "tag": "票據・原因關係",
+    "p": "我簽本票給他擔保約定的30萬元借款，但他沒交錢，請確認本票債權不存在。",
+    "d": "本票確實是擔保這筆借款，我已經交付30萬元。",
+    "base": "直接前後手，簽發真正不爭執；兩造已確立唯一原因關係為這筆借款，僅爭交付。無其他債權或票據流通問題。",
+    "issues": [
+      "已確立的原因借款是否交付",
+      "原告是否親自簽發本票",
+      "有本票就不得審查原因關係"
+    ],
+    "facts": [
+      {
+        "text": "被告已交付這筆30萬元借款",
+        "truth": "U",
+        "support": "D",
+        "evidence": "被告只提出自己的提款單，無法證明交給原告；綜合證據，交付仍不明。"
+      },
+      {
+        "text": "原告親自簽發本票",
+        "truth": "T",
+        "support": "D",
+        "evidence": "簽名真正已無爭執；本題並非只憑否認原因就要求執票人舉證。"
+      },
+      {
+        "text": "本票票面記載30萬元",
+        "truth": "T",
+        "support": "D",
+        "evidence": "票面金額不當然證明已確立原因關係下的實際交付。"
+      }
+    ],
+    "burden": "D",
+    "winner": "P",
+    "reason": "票據具有無因性，不能一開始就一概要求執票人證明原因關係。但本題兩造已確立原因關係為借貸，進入實體審理後，交付應由貸與人即被告證明；不能仍一律要發票人證明未交付。",
+    "sources": [
+      "billCause",
+      "loan"
+    ]
+  },
+  {
+    "title": "票據還在，票款已付",
+    "tag": "票據・消滅抗辯",
+    "p": "本票20萬元我已全數付清，請確認本票債權不存在。",
+    "d": "票是你簽的，而且原本還在我手上，債權當然存在。",
+    "base": "本票真正、原因債權原先成立不爭執。原告為發票人，被告為直接受款人，僅爭本件票款是否清償。",
+    "issues": [
+      "本件票款是否已經清償",
+      "被告是否保有本票原本",
+      "本票簽發時有無原因債權"
+    ],
+    "facts": [
+      {
+        "text": "原告已清償本件全部票款",
+        "truth": "T",
+        "support": "P",
+        "evidence": "被告簽收的清償證明列明本票號碼與20萬元，匯款資料吻合，無其他未付利息費用或反證。"
+      },
+      {
+        "text": "本票原本仍由被告保管",
+        "truth": "T",
+        "support": "D",
+        "evidence": "持有原本不能推翻可信且明確對應本票的全額清償證據。"
+      },
+      {
+        "text": "本票最初確實有效簽發",
+        "truth": "T",
+        "support": "D",
+        "evidence": "原先成立，不等於後來不會因清償而消滅。"
+      }
+    ],
+    "burden": "P",
+    "winner": "P",
+    "reason": "原告雖提消極確認之訴，主張的卻是清償這個消滅事由，仍須由原告證明。本題已證明全額清償，確認不存在的請求有理由。",
+    "sources": [
+      "billPay",
+      "billLaw"
+    ]
+  },
+  {
+    "title": "做好的櫃子，尾款呢？",
+    "tag": "承攬・完成交付",
+    "p": "訂製櫃已依約完成並交付，請付尾款4萬元。",
+    "d": "合約和尾款金額沒錯，但你還沒完成交付，尾款不用付。",
+    "base": "約定全部完成交付才付尾款，無另定驗收條件。被告只否認完成交付，未主張瑕疵、抵銷或其他抗辯。",
+    "issues": [
+      "報酬的完成交付條件是否成就",
+      "承攬人是否已買足材料",
+      "定作人是否有裝修預算"
+    ],
+    "facts": [
+      {
+        "text": "約定櫃體已全部完成並交付",
+        "truth": "T",
+        "support": "P",
+        "evidence": "逐項簽收清單、現場照片與證人證述一致，確認全部約定項目完成交付。"
+      },
+      {
+        "text": "原告已支付材料費",
+        "truth": "T",
+        "support": "P",
+        "evidence": "材料支出不等於約定工作已全部完成交付。"
+      },
+      {
+        "text": "被告有足夠的裝修預算",
+        "truth": "U",
+        "support": "P",
+        "evidence": "有無預算不是報酬請求權的發生要件。"
+      }
+    ],
+    "burden": "P",
+    "winner": "P",
+    "reason": "承攬人請求依約於完工交付時給付的報酬，須證明工作完成及交付。本題證據已足，尾款應給付；本題未把工作有瑕疵和未完成混為一談。",
+    "sources": [
+      "workDone",
+      "civil"
+    ]
+  },
+  {
+    "title": "追加工程誰點的？",
+    "tag": "承攬・追加合意",
+    "p": "屋主另外叫我加做隔間，已完工，請付追加款6萬元。",
+    "d": "那是你自己加做的，我從沒同意追加，也沒答應6萬元。",
+    "base": "原契約範圍與價款已結清。原告僅依追加承攬契約請款，無不當得利、無因管理或默示追認等其他依據。",
+    "issues": [
+      "追加承攬及報酬合意是否成立",
+      "原工程是否已經結清",
+      "追加材料是否已經購買"
+    ],
+    "facts": [
+      {
+        "text": "屋主同意追加隔間並約定6萬元",
+        "truth": "U",
+        "support": "P",
+        "evidence": "只有承攬人單方估價單，未獲回簽；其餘證據仍不能確認追加合意及報酬。"
+      },
+      {
+        "text": "原告確實施作了隔間",
+        "truth": "T",
+        "support": "P",
+        "evidence": "施作行為本身不能直接證明屋主有追加委託。"
+      },
+      {
+        "text": "原契約款項已結清",
+        "truth": "T",
+        "support": "D",
+        "evidence": "原契約結清不直接決定另有無追加契約。"
+      }
+    ],
+    "burden": "P",
+    "winner": "D",
+    "reason": "依追加承攬契約請款者，應證明追加委託及報酬約定。不能以自己確實花工花料，就直接推論對方同意追加。",
+    "sources": [
+      "workExtra",
+      "procedure"
+    ]
+  },
+  {
+    "title": "有瑕疵就不用付？",
+    "tag": "承攬・減少報酬",
+    "p": "浴室工程已完成交付，尾款3萬元到期未付，請求給付。",
+    "d": "完工交付我承認，但防水有瑕疵，我主張減少報酬3萬元。",
+    "base": "僅爭防水瑕疵是否存在；若有瑕疵，民法494條其他減價要件、減價額3萬元均不爭執。無同時履行抗辯。",
+    "issues": [
+      "減少報酬所依據的瑕疵是否存在",
+      "工程是否完成交付",
+      "承攬人是否保證絕不出問題"
+    ],
+    "facts": [
+      {
+        "text": "完成的防水工程存在本件瑕疵",
+        "truth": "U",
+        "support": "D",
+        "evidence": "被告照片無法辨認水源，檢測也未確認防水缺陷；綜合調查後，瑕疵存在仍不明。"
+      },
+      {
+        "text": "原告已經完成並交付工作",
+        "truth": "T",
+        "support": "P",
+        "evidence": "完成與瑕疵是不同問題；完成交付本身不排除減價抗辯。"
+      },
+      {
+        "text": "被告不滿意工程外觀",
+        "truth": "T",
+        "support": "D",
+        "evidence": "主觀不滿不能取代本件防水瑕疵的證明。"
+      }
+    ],
+    "burden": "D",
+    "winner": "P",
+    "reason": "定作人主張瑕疵擔保減少報酬，須證明瑕疵存在。工作完成不等於毫無瑕疵，有瑕疵也不當然免除全部報酬；本題減價要件中的瑕疵未獲證明，尾款應給付。",
+    "sources": [
+      "workDefect",
+      "civil"
+    ]
+  },
+  {
+    "title": "中古屋藏著的漏水",
+    "tag": "買賣・瑕疵減價",
+    "p": "買屋交付後才發現舊漏水，已通知並主張減價10萬元，請返還多付價金。",
+    "d": "我否認交屋時就有漏水。你交屋後發現漏水，不能就說交屋前已經存在。",
+    "base": "價金已付。被告明確否認交付時已有漏水瑕疵，該事實未經自認。適時通知、權利期間、減價額及其餘要件不爭執，無免責約款。",
+    "issues": [
+      "交付時是否已有物之瑕疵",
+      "賣方是否故意隱瞞漏水",
+      "買方交付後是否已入住"
+    ],
+    "facts": [
+      {
+        "text": "漏水瑕疵在房屋交付時已存在",
+        "truth": "T",
+        "support": "P",
+        "evidence": "鑑定確認防水老化及長年水痕，交付前修繕照片亦相符，足認交付時已有減損效用的漏水。"
+      },
+      {
+        "text": "賣方事先知道漏水",
+        "truth": "U",
+        "support": "P",
+        "evidence": "賣方是否知情仍不明；本題依物之瑕疵擔保減價，不以其故意過失為要件。"
+      },
+      {
+        "text": "買方已搬入房屋居住",
+        "truth": "T",
+        "support": "D",
+        "evidence": "入住本身不代表放棄已適時行使的瑕疵擔保權利。"
+      }
+    ],
+    "burden": "P",
+    "winner": "P",
+    "reason": "買方須證明危險移轉時已有瑕疵。依民法354、359條主張減少價金，原則上不以賣方知情或有過失為要件；本題其他要件既已具備，應返還減價部分價金。",
+    "sources": [
+      "saleDefect",
+      "civil"
+    ]
+  },
+  {
+    "title": "故障發生在交屋之後",
+    "tag": "買賣・瑕疵時點",
+    "p": "冷氣買回去後壞了，我依物之瑕疵擔保主張減價，請退5千元。",
+    "d": "交付時沒有問題，是你後來施工割傷管線才壞的。",
+    "base": "僅依民法354、359條請求，無另外保固約定、不完全給付或消保法請求；其餘減價要件不爭執。",
+    "issues": [
+      "瑕疵是否在危險移轉時存在",
+      "現在是否已經無法正常使用",
+      "賣方是否願意提供免費維修"
+    ],
+    "facts": [
+      {
+        "text": "冷氣在交付時已有本件瑕疵",
+        "truth": "F",
+        "support": "P",
+        "evidence": "鑑定及交付測試均確認交付時正常，故障係買方交付後裝修割傷管線造成；已證明不是交付時的瑕疵。"
+      },
+      {
+        "text": "冷氣現在確實無法正常運轉",
+        "truth": "T",
+        "support": "P",
+        "evidence": "現在故障與交付時就有瑕疵，是兩件不同的事。"
+      },
+      {
+        "text": "賣方拒絕免費維修",
+        "truth": "T",
+        "support": "P",
+        "evidence": "本題無額外保固，拒絕免費維修不能直接證明法定瑕疵擔保責任。"
+      }
+    ],
+    "burden": "P",
+    "winner": "D",
+    "reason": "法定物之瑕疵擔保以危險移轉時存在的瑕疵為對象。本題已證明損壞發生在交付後，並非僅因舉證不足而敗訴；若另有保固約定，須另依其內容判斷。",
+    "sources": [
+      "saleDefect",
+      "civil"
+    ]
+  },
+  {
+    "title": "抵押登記不等於放款",
+    "tag": "抵押權・債權未發生",
+    "p": "房子先辦普通抵押給他，但他從沒交付借款，請確認抵押權及擔保債權不存在。",
+    "d": "你都辦好抵押登記了，當然代表我已借你50萬元。",
+    "base": "僅擔保這筆50萬元借款的普通抵押權，並非最高限額抵押權；合意及登記無爭執，只爭交付，確認利益具備。",
+    "issues": [
+      "抵押權擔保的借款債權是否發生",
+      "普通抵押權是否完成登記",
+      "原告是否已辦理抵押權塗銷"
+    ],
+    "facts": [
+      {
+        "text": "被告已交付擔保的50萬元借款",
+        "truth": "U",
+        "support": "D",
+        "evidence": "只有抵押權登記文件，沒有收款記載；其他證據也不足，交付仍真偽不明。"
+      },
+      {
+        "text": "房屋確已設定普通抵押權",
+        "truth": "T",
+        "support": "D",
+        "evidence": "可能先設定再放款，登記不能直接推論借款已交付。"
+      },
+      {
+        "text": "抵押權目前尚未塗銷",
+        "truth": "T",
+        "support": "D",
+        "evidence": "登記仍在正是本件紛爭，不能當作債權發生的證明。"
+      }
+    ],
+    "burden": "D",
+    "winner": "P",
+    "reason": "消極確認訴訟中，主張擔保債權存在的抵押權人應證明債權發生。普通抵押登記本身不能倒推借款交付；本題無其他擔保債權，應准許確認不存在。不得逕套用於尚未確定的最高限額抵押權。",
+    "sources": [
+      "mortgage",
+      "civil"
+    ]
+  },
+  {
+    "title": "抵押借款已經還清？",
+    "tag": "抵押權・清償主張",
+    "p": "原先借款50萬元並設定普通抵押都沒錯，但我已還清，請確認抵押權及擔保債權不存在。",
+    "d": "借款還沒還，抵押權當然還在。",
+    "base": "原告為借款人兼抵押人。債權成立、交付及普通抵押均無爭執；僅爭全額清償，確認利益具備，無其他消滅事由。",
+    "issues": [
+      "擔保借款是否已因清償消滅",
+      "抵押權人當初是否交付借款",
+      "抵押登記是否已經存在多年"
+    ],
+    "facts": [
+      {
+        "text": "原告已全額清償本件擔保借款",
+        "truth": "U",
+        "support": "P",
+        "evidence": "原告提出交付現金的自製清單，但無收款簽認；調查其他資料後清償仍不明。"
+      },
+      {
+        "text": "被告當初曾交付50萬元",
+        "truth": "T",
+        "support": "D",
+        "evidence": "原告已承認，這次真正爭執的是後來有無清償。"
+      },
+      {
+        "text": "普通抵押權已登記很多年",
+        "truth": "T",
+        "support": "P",
+        "evidence": "時間經過不當然證明債務已清償；本題無其他消滅事由。"
+      }
+    ],
+    "burden": "P",
+    "winner": "D",
+    "reason": "消極確認之訴不代表所有事實都由被告證明。原告已承認債權發生，另外主張清償，應由原告證明消滅事由；清償仍不明，確認不存在之請求應駁回。",
+    "sources": [
+      "mortgagePay",
+      "procedure"
+    ]
+  }
+]);
+if(typeof module!=='undefined')module.exports={CASES,SOURCES};
+</script><script>const $=s=>document.querySelector(s), screen=$('#screen');
+const ROUND_SIZE=6, CHOICE_MS=7000;
+function drawRound(){return order(CASES.map((_,i)=>i)).slice(0,ROUND_SIZE);}
+function currentCase(){return CASES[state.deck[state.index]];}
+const labels={P:'原告',D:'被告',N:'無須舉證（已自認）'};
+let state={mode:'challenge',index:0,step:-1,picks:[],history:[],phase:'home',paused:false},deadline=0,remaining=CHOICE_MS,ticker=null,displayOptions=[],choiceReady=0,sound=false,audio;
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function beep(freq=440){if(!sound)return;try{audio??=new(window.AudioContext||window.webkitAudioContext)();audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.type='square';o.frequency.value=freq;g.gain.setValueAtTime(.025,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.1);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.11)}catch{}}
+function stop(){clearInterval(ticker);ticker=null;}
+function home(){stop();state.phase='home';$('#pause').hidden=true;$('#case-count').textContent='COURT IS IN SESSION';screen.innerHTML=`<div class="intro"><div class="intro-copy"><div class="eyebrow">20 CASES · DRAW 6 · 7 SECONDS</div><h1>請問，<br>這件事<span class="gold">誰要證明？</span></h1><p>原告說有，被告說沒有。<br>找出真正的爭點，別讓舉證責任走錯邊。</p><div class="buttons"><button class="primary" id="start">正式開庭 <span aria-hidden="true">→</span></button><button class="secondary" id="practice">不限時練習</button></div><p class="tiny">讀完案情再開始。20題題庫，每局隨機抽6題、不重複；每案3次選擇。</p></div><div class="rules"><div class="rule"><b>01</b><div><strong>整理爭點</strong><small>兩造到底在爭什麼？</small></div></div><div class="rule"><b>02</b><div><strong>鎖定關鍵事實</strong><small>什麼事實，才真正影響請求？</small></div></div><div class="rule"><b>03</b><div><strong>分配舉證責任</strong><small>調查後仍不明，誰承擔不利益？</small></div></div><p class="tiny">每局6案，滿分60分。勝敗碰巧相同，不等於理由正確。<br>7秒是遊戲規則，實際審理仍須充分調查與辯論。</p></div></div>`;$('#start').onclick=()=>start('challenge');$('#practice').onclick=()=>start('practice');}
+function start(mode){state={mode,deck:drawRound(),index:0,step:-1,picks:[],history:[],phase:'reading',paused:false};readCase();}
+function head(c){return `<div class="casehead"><div><div class="eyebrow">CASE ${String(state.index+1).padStart(2,'0')} / ${ROUND_SIZE} <span style="letter-spacing:1px"> · ${c.tag}</span></div><h2>${c.title}</h2></div><span class="stat">${state.mode==='practice'?'不限時練習':state.history.reduce((a,r)=>a+r.points,0)+' 分'}</span></div>`;}
+function statements(c){return `<div class="testimony"><div class="speech"><label>被告 · 答辯</label><p>「${c.d}」</p></div><div class="speech plaintiff"><label>原告 · 主張</label><p>「${c.p}」</p></div></div>`;}
+function readCase(){stop();state.phase='reading';state.step=-1;state.picks=[];$('#pause').hidden=true;$('#case-count').textContent=`第 ${state.index+1} 案 ／ 共 ${ROUND_SIZE} 案`;$('#caption').textContent='先聽雙方說完，再開始整理爭點。';const c=currentCase();screen.innerHTML=head(c)+statements(c)+`<div class="base"><b>本案前提</b>　${c.base}</div><div class="buttons"><button class="primary" id="ready">案情讀完，開始${state.mode==='challenge'?'7秒挑戰':'判斷'} →</button></div><p class="tiny">此頁不計時。${state.mode==='practice'?'練習模式全程不限時。':'每個選項限時7秒；逾時會記為「拖庭」，不會替你亂選。'}</p>`;$('#ready').onclick=()=>{state.step=0;question();};drawCourt();}
+function order(items){const a=items.slice();for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function question(){stop();state.phase='question';state.paused=false;const c=currentCase(),s=state.step;const pool=s===0?c.issues.map((text,id)=>({text,id})):s===1?c.facts.map((f,id)=>({text:f.text,id})):Object.entries(labels).map(([id,text])=>({id,text}));displayOptions=order(pool);$('#pause').hidden=false;$('#caption').textContent=['法官，請整理本件主要爭點。','哪一個事實，會決定本件請求？','針對你選的事實，應由誰舉證？'][s];screen.innerHTML=head(c)+`<div class="steps">${['爭點','關鍵事實','舉證責任'].map((t,i)=>`<span class="step ${i===s?'active':i<s?'done':''}">${i<s?'✓':String(i+1).padStart(2,'0')}　${t}</span>`).join('')}</div>`+`<div class="base"><b>原告</b>：${c.p}<br><b>被告</b>：${c.d}<details class="case-premise"><summary>查看本案前提（展開即暫停）</summary>${c.base}</details></div><div class="chosen">${state.picks.map((v,i)=>`<span>${['爭點','事實'][i]}：${v===null?'逾時未選':i===0?c.issues[v]:c.facts[v].text}</span>`).join('')}</div><div class="questionhead"><h2>${['本件主要爭點？','真正的關鍵事實？','這個事實，誰要舉證？'][s]}</h2><span class="clockgroup"><button class="quiet" id="pause-round" aria-label="暫停倒數">Ⅱ</button> <span class="timer" role="timer" aria-label="剩餘時間">${state.mode==='practice'?'∞':'7.0'}</span></span></div><div class="track"><div class="fill"></div></div><div class="options">${displayOptions.map((o,i)=>`<button class="option" data-choice="${i}"><span class="key">${i+1}</span>${o.text}</button>`).join('')}</div><p class="tiny">${state.mode==='practice'?'練習模式不倒數。':'選項出現才開始倒數。'}可用鍵盤1／2／3選擇，P暫停。</p>`;document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>choose(displayOptions[+b.dataset.choice].id));screen.scrollIntoView({block:'start',behavior:'instant'});$('.case-premise').addEventListener('toggle',()=>{if($('.case-premise')?.open&&state.phase==='question'&&!state.paused)openModal('<h2>本案前提</h2><p>'+c.base+'</p>');});$('#pause-round').onclick=()=>$('#pause').click();remaining=CHOICE_MS;choiceReady=performance.now()+250;runTimer();}
+function runTimer(){if(state.mode==='practice')return;deadline=performance.now()+remaining;ticker=setInterval(()=>{if(state.paused||state.phase!=='question')return;remaining=Math.max(0,deadline-performance.now());$('.timer').textContent=(remaining/1000).toFixed(1);$('.timer').classList.toggle('urgent',remaining<1500);$('.fill').style.transform=`scaleX(${remaining/CHOICE_MS})`;if(remaining===0)choose(null);},40);}
+function choose(v){if(state.phase!=='question'||state.paused||performance.now()<choiceReady)return;if(state.mode==='challenge'&&performance.now()>=deadline)v=null;stop();state.picks.push(v);beep(v===null?160:640);if(v===null){state.phase='timeout';$('#pause').hidden=true;screen.innerHTML+=`<div class="verdict bad"><h3>書記官：法官，拖庭了。</h3><p>這一步未作判斷，不會自動替你選答案。</p><button class="primary" id="continue">${state.step<2?'繼續下一步':'整理本案結果'}</button></div>`;document.querySelectorAll('.option').forEach(b=>b.disabled=true);$('#continue').onclick=advance;$('#continue').scrollIntoView({block:'nearest'});}else advance();}
+function advance(){if(state.step<2){state.step++;question();}else hearing();}
+// Deliberately wrong decisions are labelled as player simulation, never presented as valid law.
+function evaluate(c,picks){const [issue,fi,b]=picks;const checks=[issue===0,fi===0,fi===0&&b===c.burden];const points=checks.reduce((n,v,i)=>n+(v?[3,3,4][i]:0),0);if(picks.includes(null))return {checks,points,winner:null,logic:'尚有判斷缺漏，無法形成完整裁判。'};const f=c.facts[fi];let winner,logic;if(issue!==0){winner='D';logic=`你將「${c.issues[issue]}」當成主要爭點，未完整審查真正的請求基礎，便駁回請求。這是偏離爭點的模擬裁判。`;}else if(f.truth==='T'){winner=f.support;logic=`你將「${f.text}」視為決定性事實，並因該事實已獲確認，判${labels[winner]}勝訴。${fi!==0?'但這個事實本身不足以推出該勝敗。':''}`;}else if(f.truth==='F'){winner=f.support==='P'?'D':'P';logic=`調查已確認「${f.text}」並非事實，不能作為有利於${labels[f.support]}的依據，因此判${labels[winner]}勝訴。${fi!==0?'但你選的事實並非真正的決定性事實，這段推論仍有缺漏。':''}`;}else if(b==='N'){winner=f.support;logic=`你誤將有爭執且仍不明的「${f.text}」當作免證事實，直接採為裁判基礎。`;}else{winner=b==='P'?'D':'P';logic=`你將「${f.text}」的舉證責任分配給${labels[b]}。調查後仍真偽不明，因此讓${labels[b]}承擔敗訴結果。`;}
+return {checks,points,winner,logic};}
+function hearing(){stop();state.phase='hearing';$('#pause').hidden=true;const c=currentCase(),r=evaluate(c,state.picks);state.current=r;$('#caption').textContent='證據調查完畢。以下依照你的選擇演出。';const f=state.picks[1]===null?c.facts[0]:c.facts[state.picks[1]];screen.innerHTML=head(c)+`<div class="eyebrow">依你的選擇演出 · 尚未公布正解</div><div class="dialogue"><div class="line"><b>法官</b><span>${state.picks[0]===null?'爭點尚未整理完成。':`本件先處理「${c.issues[state.picks[0]]}」。`}</span></div><div class="line"><b>法官</b><span>${state.picks[1]===null?'關鍵事實尚未確定。':`我要確認的是「${f.text}」。`} ${state.picks[2]===null?'舉證責任尚未決定。':state.picks[2]==='N'?'我認為這是自認事實，無須舉證。':`請${labels[state.picks[2]]}就此事實舉證。`}</span></div><div class="line"><b>書記官</b><span>${f.evidence}</span></div><div class="line"><b>${f.support==='D'?'被告':'原告'}</b><span>請法院依卷內全部資料判斷。</span></div></div><div class="verdict"><div class="tiny">你的模擬裁判（可能包含錯誤推理）</div><div class="resulttitle">${r.winner?labels[r.winner]+'勝訴': '拖庭 · 未形成裁判'}</div><p>${r.logic}</p></div><button class="primary" id="reveal">檢驗裁判與理由 →</button>`;$('#reveal').onclick=feedback;screen.scrollIntoView({block:'start',behavior:'instant'});beep(330);}
+function sources(c){return c.sources.map(k=>`<a class="source" href="${SOURCES[k].url}" target="_blank" rel="noopener">↗ ${SOURCES[k].name}</a>`).join('');}
+function analysisHTML(c,r,picks){return `<div class="checks">${r.checks.map((yes,i)=>`<span class="${yes?'':'bad'}">${yes?'✓':'✕'} ${['爭點','事實','責任（含待證對象）'][i]}</span>`).join('')}</div><p><b>正確路徑：</b>${c.issues[0]} → ${c.facts[0].text} → ${labels[c.burden]}</p><div class="base"><b>固定卷證：</b>${c.facts[0].evidence}</div><p>${c.reason}</p>${picks[1]!==null&&picks[1]!==0?`<p class="tiny">你選的「${c.facts[picks[1]].text}」不是本件待證的決定性事實，不能只憑它推導勝敗。</p>`:''}${sources(c)}`;}
+function feedback(){state.phase='feedback';const c=currentCase(),r=state.current;state.history.push({...r,picks:state.picks.slice(),caseIndex:state.deck[state.index],roundIndex:state.index});const all=r.checks.every(Boolean),match=r.winner===c.winner;$('#caption').textContent=all?'書記官：爭點清楚，理由也站得住腳。':'書記官：判決理由還有需要釐清的地方。';screen.innerHTML=head(c)+`<div class="verdict ${all?'':'bad'}"><div class="tiny">${all?'判斷完整':match?'勝敗碰巧相同，推理仍有缺漏':r.winner?'裁判結果不正確':'尚未形成裁判'}</div><div class="resulttitle">本案正解：${labels[c.winner]}勝訴 <span class="badge">＋${r.points} / 10 分</span></div>${analysisHTML(c,r,state.picks)}</div><div class="buttons"><button class="primary" id="next">${state.index===ROUND_SIZE-1?'查看今日結算':'下一件案件'} →</button></div><p class="tiny">本題依固定案情與完整調查後的證據狀態判斷；不是只看誰沒有提出書面證據。</p>`;$('#next').onclick=()=>{state.index++;state.index===ROUND_SIZE?finish():readCase();};screen.scrollIntoView({block:'start',behavior:'instant'});}
+function finish(){state.phase='finished';$('#pause').hidden=true;const total=state.history.reduce((n,r)=>n+r.points,0),perfect=state.history.filter(r=>r.checks.every(Boolean)).length,timeouts=state.history.reduce((n,r)=>n+r.picks.filter(v=>v===null).length,0);$('#caption').textContent='今日庭期結束。翻開卷宗，看看你的判斷。';screen.innerHTML=`<div class="eyebrow">COURT ADJOURNED · ${state.mode==='practice'?'練習結算':'今日結算'}</div><h2>${total===ROUND_SIZE*10?'爭點明確，裁判有據。':total>=ROUND_SIZE*7?'掌握重點，再磨一下理由。':'慢下來，把待證事實找清楚。'}</h2><div class="score">${total}<small> / ${ROUND_SIZE*10}</small></div><p>完整判斷 ${perfect} / ${ROUND_SIZE} 件　·　拖庭 ${timeouts} 次</p><div class="buttons"><button class="primary" id="again">重新開庭</button><button class="secondary" id="train">不限時再練一次</button></div><h3 style="margin-top:28px">今日卷宗 · 逐案複盤</h3>${state.history.map(r=>{const c=CASES[r.caseIndex];return `<details class="review-row"><summary><span>${String(r.roundIndex+1).padStart(2,'0')}　${c.title}</span><span>${r.points} / 10</span></summary><div class="body"><p>你的結果：${r.winner?labels[r.winner]+'勝訴':'未形成裁判'}；正解：${labels[c.winner]}勝訴。</p>${analysisHTML(c,r,r.picks)}</div></details>`}).join('')}<p class="tiny">題庫查核：2026-10-27。以上為簡化虛構案件；判決連結供核對所採法律原則，並非原案重現。一般原則仍受民訴277條但書等例外限制。</p>`;$('#again').onclick=()=>start('challenge');$('#train').onclick=()=>start('practice');screen.scrollIntoView({block:'start',behavior:'instant'});}
+function openModal(html){if(state.phase==='question'&&!state.paused){remaining=state.mode==='practice'?CHOICE_MS:Math.max(0,deadline-performance.now());state.paused=true;stop();}$('#modal-body').innerHTML=html;$('#modal').showModal();}
+function resume(){if($('.case-premise'))$('.case-premise').open=false;if(state.paused){state.paused=false;runTimer();}}
+$('#close-modal').onclick=()=>$('#modal').close();$('#modal').addEventListener('close',resume);
+$('#pause').onclick=()=>openModal('<h2>休庭一下</h2><p>倒數已暫停。準備好再回到法庭。</p>');
+$('#help').onclick=()=>openModal('<h2>七秒開庭 · 玩法</h2><p>先讀雙方陳述及本案前提。開始後，依序選擇爭點、關鍵事實、舉證責任，每步7秒；不限時模式可自由思考。</p><p>全部選完，系統依你的路徑演出證據調查與模擬裁判，最後公布正解。錯誤路徑可能碰巧得到相同勝敗，但理由仍會扣分。</p><p>每案：爭點3分、事實3分、舉證責任4分，每局從20題隨機抽6案，滿分60分。逾時不代選，該步0分；任何一步缺漏即不形成裁判。</p><p>鍵盤1／2／3選擇，P暫停；離開分頁會自動休庭。案情閱讀及解析不計時。</p><p>本遊戲針對臺灣民事訴訟。卷證固定，證明不足指綜合調查後仍真偽不明，不代表「沒收據就一定輸」。七秒為遊戲效果，非真實審理方式。</p>');
+$('#sound').onclick=()=>{sound=!sound;$('#sound').textContent=`音效 ${sound?'開':'關'}`;beep();};
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.phase==='question'&&!state.paused)openModal('<h2>自動休庭</h2><p>你離開了分頁，倒數已暫停。</p>');});
+document.addEventListener('keydown',e=>{if($('#modal').open)return;if(state.phase==='question'&&!e.repeat){if(['1','2','3'].includes(e.key)){e.preventDefault();choose(displayOptions[+e.key-1].id);}if(e.key.toLowerCase()==='p')$('#pause').click();}});
+function drawCourt(){const cv=$('#court'),g=cv.getContext('2d');g.imageSmoothingEnabled=false;const R=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(x,y,w,h)},L=(x,y,w,c)=>R(x,y,w,1,c);
+R(0,0,640,230,'#374d46');R(0,0,640,9,'#141e24');R(0,10,640,3,'#98845e');R(0,14,640,105,'#526256');
+for(let x=0;x<640;x+=80){R(x+3,15,3,100,'#3a4b43');R(x+7,15,1,100,'#7a7e64');R(x+17,28,52,70,'#46594e');R(x+19,30,48,66,'#4e6154');}
+for(const x of [24,564]){R(x,15,52,106,'#8f9272');R(x+5,15,42,106,'#adab84');for(let i=0;i<4;i++)R(x+10+i*9,21,3,91,'#858e72');R(x-5,15,62,7,'#c1b68b');R(x-4,112,60,9,'#c1b68b');}
+// High windows, warm lamplight, wood paneling.
+for(const x of [103,461]){R(x-4,23,80,70,'#273d3e');R(x,27,72,62,'#b1c2b0');R(x+3,30,66,56,'#7f9d99');R(x+5,32,30,25,'#b1c7b7');R(x+39,32,28,25,'#a3bdb2');R(x+34,29,4,59,'#354c4a');R(x+1,58,70,4,'#354c4a');R(x-8,89,88,5,'#b4a37d');}
+R(210,17,220,104,'#394c44');R(217,20,206,98,'#59634e');R(225,24,190,92,'#475443');R(232,28,176,87,'#536049');
+// Court emblem: balance, rendered in native pixels.
+R(314,35,12,5,'#d5be7e');R(318,40,4,27,'#ccb676');R(290,47,60,3,'#d6c083');R(293,50,2,14,'#b7a56c');R(345,50,2,14,'#b7a56c');R(281,65,26,3,'#d6c083');R(284,68,20,3,'#aa955d');R(333,65,26,3,'#d6c083');R(336,68,20,3,'#aa955d');R(308,72,24,4,'#d6c083');
+R(0,118,640,59,'#674b38');for(let x=0;x<640;x+=48){R(x+3,124,42,46,'#7c5b40');R(x+7,128,34,38,'#5d4936');R(x+9,130,30,34,'#6c513a');}R(0,116,640,5,'#bea77b');R(0,172,640,6,'#302d28');
+R(0,178,640,52,'#666a56');for(let y=180;y<230;y+=13){L(0,y,640,'#414e44');for(let x=(y%2)*20;x<640;x+=55)R(x,y,1,13,'#4c584b');}
+R(230,179,180,51,'#6d5142');R(240,179,160,51,'#875e46');R(247,180,146,50,'#705644');
+// Judge's chair.
+R(287,84,66,73,'#252e2e');R(291,80,58,71,'#937246');R(296,84,48,65,'#493d35');R(301,89,38,60,'#693f35');R(290,143,60,12,'#a07b4e');
+function person(x,y,type,variant){const skin=['#d6a47b','#e9b48c','#c68e6c'][variant%3],light=['#f1c4a1','#ffd0a5','#e0ab83'][variant%3],hair=type==='judge'?'#202b2c':variant%2?'#573c30':'#25353b',coat=type==='judge'?'#171e28':type==='defendant'?'#5c8391':'#bf9670';
+R(x+9,y+5,25,23,hair);R(x+6,y+12,31,17,hair);R(x+11,y+11,21,24,skin);R(x+13,y+13,18,18,light);R(x+10,y+7,25,8,hair);R(x+10,y+14,5,6,hair);R(x+30,y+13,4,8,hair);R(x+8,y+22,4,7,skin);R(x+32,y+22,4,7,skin);R(x+16,y+21,3,3,'#292d2a');R(x+27,y+21,3,3,'#292d2a');R(x+23,y+24,2,4,skin);R(x+20,y+31,7,1,'#9a6652');R(x+17,y+34,11,7,skin);R(x+8,y+39,29,30,coat);R(x+3,y+45,9,24,coat);R(x+35,y+45,9,24,coat);R(x+7,y+66,30,5,'#243134');
+if(type==='judge'){R(x+15,y+39,4,27,'#3368a1');R(x+27,y+39,4,27,'#447fb6');R(x+19,y+40,8,6,'#d6d9c7');R(x+20,y+47,6,18,'#242b33');R(x+14,y+20,8,6,'#403f38');R(x+25,y+20,8,6,'#403f38');R(x+16,y+21,4,3,light);R(x+27,y+21,4,3,light);R(x+22,y+22,3,1,'#c8ba8e');}else{R(x+19,y+39,7,18,'#ebe0bd');R(x+22,y+42,3,20,type==='defendant'?'#304b62':'#764d3e');R(x+9,y+42,7,5,'#a4b7af');R(x+30,y+42,5,5,'#e0b88a');}R(x+3,y+64,9,6,skin);R(x+35,y+64,9,6,light);}
+person(298,86,'judge',0);person(123,121,'defendant',state.index+1);person(475,121,'plaintiff',state.index+2);
+function desk(x,y,w){R(x+3,y+5,w-6,44,'#322e28');R(x,y,w,7,'#b08a58');R(x+2,y+7,w-4,3,'#6b4a34');R(x+6,y+12,w-12,33,'#7a573c');R(x+12,y+16,w-24,24,'#4d4131');R(x+15,y+18,w-30,20,'#705039');L(x+8,y+12,w-16,'#b48c58');}
+desk(252,151,136);desk(76,187,132);desk(432,187,132);R(281,148,30,3,'#ded7b6');R(286,145,28,3,'#eee8cc');R(331,147,20,4,'#d5c5a1');R(342,143,12,4,'#b2724e');R(115,182,32,5,'#e9dfbb');R(119,180,28,2,'#b9beac');R(481,182,32,5,'#e9dfbb');R(487,180,27,2,'#c1b99b');
+// Microphones and side lamps.
+for(const x of [171,465]){R(x,170,2,17,'#27353a');R(x-4,168,6,4,'#17292e');R(x-4,186,10,2,'#252f2c');}for(const x of [195,435]){R(x,50,3,32,'#252f2b');R(x-9,45,21,8,'#d3b974');R(x-6,53,15,4,'#edd3a0');R(x-5,81,13,3,'#a7905b');}
+// Foreground rails and plants.
+for(const x of [12,595]){R(x+5,178,21,30,'#a4754f');R(x+3,176,25,5,'#c29364');R(x+14,151,3,28,'#314c3b');for(let i=0;i<5;i++){R(x+(i%2)*10,146+i*5,15,7,i%2?'#547555':'#72906b');}}
+R(0,225,640,5,'#23362f');}
+home();drawCourt();
+</script>
+</body></html>
