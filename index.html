@@ -264,10 +264,46 @@
     <div class="retro-counter" title="復古 hit counter：每次載入首頁都可能增加一次">
       <span class="retro-counter__star">★</span>
       <span>YOU ARE VISITOR</span>
-      <img src="https://api.visitorbadge.io/api/VisitorHit?user=faciang&repo=Game-index-page&label=No.&labelColor=%23111111&countColor=%23111111" alt="首頁瀏覽次數">
+      <img id="retro-counter-img" alt="首頁瀏覽次數" style="display:none">
+      <span id="retro-counter-fallback" class="retro-counter__since" hidden>計數器暫時無法顯示</span>
       <span class="retro-counter__blink">THANKS!</span>
       <span class="retro-counter__since">SINCE 2026</span>
     </div>
+    <script>
+    // 保留原計數來源及累積數字；避免瀏覽器快取把計數畫面卡住。
+    // 若原服務真的無法載入，再切換新版端點、最後使用獨立備援。
+    (() => {
+      const img = document.getElementById("retro-counter-img");
+      const since = document.querySelector(".retro-counter__since");
+      const unavailable = document.getElementById("retro-counter-fallback");
+      const sources = [
+        "https://api.visitorbadge.io/api/VisitorHit?user=faciang&repo=Game-index-page&label=No.&labelColor=%23111111&countColor=%23111111",
+        "https://api.visitorbadge.io/api/visitors?path=faciang%2FGame-index-page&label=No.&labelColor=%23111111&countColor=%23111111",
+        "https://vbr.nathanchung.dev/badge?page_id=faciang.Game-index-page&text=No.&color=111111&lcolor=111111"
+      ];
+      let sourceIndex = 0;
+      function loadCounter() {
+        const url = sources[sourceIndex];
+        // 每次開啟首頁要求新圖片，不用可能過期的瀏覽器快取。
+        img.src = url + "&_cb=" + Date.now();
+      }
+      img.addEventListener("load", () => { img.style.display = "block"; });
+      img.addEventListener("error", () => {
+        img.style.display = "none";
+        sourceIndex += 1;
+        if (sourceIndex < sources.length) {
+          // 備援服務可能使用不同計數資料，不能冒充原有累積數字。
+          since.textContent = "BACKUP COUNT";
+          since.title = "備援計數可能不含原有累積次數";
+          loadCounter();
+        } else {
+          unavailable.hidden = false;
+          since.textContent = "TEMPORARILY UNAVAILABLE";
+        }
+      });
+      loadCounter();
+    })();
+    </script>
     <section class="guestbook" aria-labelledby="guestbook-title">
       <h2 id="guestbook-title">✦ 玩家留言板 <span aria-hidden="true">💬</span></h2>
       <p class="guestbook__sub">GUESTBOOK · 玩完遊戲，留個言吧！不必註冊帳號。</p>
