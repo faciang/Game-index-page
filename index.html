@@ -274,7 +274,7 @@
     // 若原服務真的無法載入，再切換新版端點、最後使用獨立備援。
     (() => {
       const img = document.getElementById("retro-counter-img");
-      const since = document.querySelector(".retro-counter__since");
+      const since = document.querySelector(".retro-counter__since:not(#retro-counter-fallback)");
       const unavailable = document.getElementById("retro-counter-fallback");
       const sources = [
         "https://api.visitorbadge.io/api/VisitorHit?user=faciang&repo=Game-index-page&label=No.&labelColor=%23111111&countColor=%23111111",
