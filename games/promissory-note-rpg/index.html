@@ -1,0 +1,3122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>訴訟實戰 RPG 第一彈：《神秘的票據之謎》</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-outer: #080a12;
+      --rpg-blue-top: #1a3b96;
+      --rpg-blue-mid: #0e205c;
+      --rpg-blue-bot: #071030;
+      --rpg-border: #eef4ff;
+      --rpg-border-shadow: #425da6;
+      --bronze-hi: #ffe394;
+      --bronze-mid: #c99232;
+      --bronze-dark: #5e3d0e;
+      --gold: #ffd454;
+      --hp-green: #3ee068;
+      --hp-yellow: #f5c842;
+      --hp-red: #f04848;
+      --parchment: #f4ebd0;
+      --parchment-dark: #d9c89e;
+      --ink: #1e1a16;
+      --stamp-red: #c92626;
+      --font-pixel: 'DotGothic16', 'Noto Sans TC', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: radial-gradient(circle at center, #181c30 0%, #070910 100%);
+      color: #f4f7ff;
+      font-family: var(--font-pixel);
+      line-height: 1.55;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* 主機外框 */
+    .game-shell {
+      position: relative;
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .console-frame {
+      position: relative;
+      background: #0e111d;
+      border: 4px solid var(--bronze-dark);
+      box-shadow:
+        0 0 0 2px #05070d,
+        inset 0 0 0 2px var(--bronze-mid),
+        0 20px 55px rgba(0, 0, 0, 0.85);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* CRT 掃描線覆蓋層 */
+    .crt-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 90;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.22) 0px,
+          rgba(0, 0, 0, 0.22) 1px,
+          transparent 1px,
+          transparent 3px
+        ),
+        radial-gradient(circle at center, transparent 60%, rgba(0, 0, 0, 0.45) 100%);
+    }
+    .crt-enabled .crt-overlay {
+      opacity: 1;
+    }
+
+    /* 經典 SFC / PS1 深藍金銅鉚釘視窗 */
+    .rpg-panel,
+    .rpg-box {
+      background: linear-gradient(180deg, var(--rpg-blue-top) 0%, var(--rpg-blue-mid) 52%, var(--rpg-blue-bot) 100%);
+      border: 3px solid var(--bronze-mid);
+      box-shadow:
+        inset 0 0 0 2px var(--rpg-border),
+        inset 0 0 0 4px var(--rpg-border-shadow),
+        0 4px 0 rgba(0, 0, 0, 0.6);
+      border-radius: 6px;
+      position: relative;
+    }
+
+    /* 畫面震動 */
+    @keyframes screenShake {
+      0%, 100% { transform: translate(0, 0); }
+      15% { transform: translate(-8px, 4px); }
+      30% { transform: translate(8px, -4px); }
+      45% { transform: translate(-6px, -3px); }
+      60% { transform: translate(6px, 3px); }
+      75% { transform: translate(-3px, 2px); }
+    }
+    .shake {
+      animation: screenShake 0.38s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    canvas.pixel-art {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      display: block;
+    }
+
+    /* 共用復古按鈕 */
+    .retro-btn {
+      font-family: var(--font-pixel);
+      background: linear-gradient(180deg, #2852cc 0%, #132a75 100%);
+      color: #fff;
+      border: 2px solid #f0f4ff;
+      box-shadow: inset 0 0 0 1px #6385e0, 0 3px 0 #070d24;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: transform 0.08s ease, filter 0.12s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .retro-btn:hover {
+      filter: brightness(1.18);
+    }
+    .retro-btn:active {
+      transform: translateY(2px);
+      box-shadow: inset 0 0 0 1px #6385e0, 0 1px 0 #070d24;
+    }
+    .retro-btn.gold-btn {
+      background: linear-gradient(180deg, #f0b930 0%, #a16a0d 100%);
+      color: #1a1103;
+      font-weight: 900;
+      border-color: #fff5cc;
+      box-shadow: inset 0 0 0 1px #ffe07a, 0 3px 0 #472c02;
+    }
+    .retro-btn.mini-btn {
+      padding: 4px 9px;
+      font-size: 0.78rem;
+      border-width: 2px;
+    }
+    .retro-btn.mini-btn.active-toggle {
+      background: linear-gradient(180deg, #2ca35a 0%, #155c31 100%);
+      border-color: #c8ffda;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* =========================================================
+       SCREEN 0: 標題畫面
+       ========================================================= */
+    .title-screen {
+      padding: 28px 20px 26px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at top, rgba(46, 90, 212, 0.35), transparent 65%),
+        linear-gradient(180deg, #161328 0%, #0c1226 55%, #1d140f 100%);
+      min-height: 600px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+    .title-screen.active { display: flex; }
+
+    .title-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      background: linear-gradient(180deg, #7d1c24 0%, #4a0e14 100%);
+      border: 2px solid var(--bronze-hi);
+      color: var(--bronze-hi);
+      font-size: 0.84rem;
+      letter-spacing: 2px;
+      border-radius: 4px;
+      box-shadow: 0 3px 0 #260609;
+    }
+
+    .title-main {
+      margin: 0;
+      font-size: clamp(1.65rem, 4.6vw, 2.55rem);
+      color: #fff7d6;
+      text-shadow: 3px 3px 0 #1e3799, -2px -2px 0 #090e24, 0 6px 16px rgba(0, 0, 0, 0.8);
+      letter-spacing: 2px;
+      line-height: 1.25;
+    }
+
+    .title-sub {
+      margin: 0;
+      font-size: clamp(0.95rem, 2.4vw, 1.15rem);
+      color: #9ec0ff;
+      letter-spacing: 3px;
+    }
+
+    .title-preview-wrap {
+      width: 100%;
+      max-width: 560px;
+      aspect-ratio: 480 / 220;
+      border: 3px solid var(--bronze-mid);
+      box-shadow: inset 0 0 0 1px var(--bronze-hi), 0 10px 26px rgba(0, 0, 0, 0.78);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #1a110b;
+    }
+    #titleStageCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .blink-arrow {
+      display: inline-block;
+      animation: blinkCursor 0.85s steps(2, start) infinite;
+    }
+    @keyframes blinkCursor {
+      to { opacity: 0.25; }
+    }
+
+    .title-hint {
+      font-size: 0.82rem;
+      color: #8b9cc7;
+    }
+
+    /* =========================================================
+       SCREEN 0.5: 序章劇情畫面（收到法院雙掛號本票裁定）
+       ========================================================= */
+    .prologue-screen {
+      min-height: 600px;
+      padding: 18px 18px 22px;
+      background:
+        radial-gradient(ellipse at 50% 15%, rgba(255, 196, 102, 0.12), transparent 60%),
+        linear-gradient(180deg, #0d0c18 0%, #141122 55%, #0a0912 100%);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+    }
+    .prologue-screen.active { display: flex; }
+
+    .prologue-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .prologue-chapter-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      background: linear-gradient(180deg, #5e1822 0%, #360c12 100%);
+      border: 2px solid var(--bronze-mid);
+      color: var(--bronze-hi);
+      font-size: 0.86rem;
+      letter-spacing: 2px;
+      border-radius: 4px;
+    }
+    .prologue-stage-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 480 / 220;
+      border: 3px solid var(--bronze-mid);
+      box-shadow: inset 0 0 0 1px var(--bronze-hi), 0 10px 28px rgba(0, 0, 0, 0.82);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #120c08;
+    }
+    #prologueCanvas {
+      width: 100%;
+      height: 100%;
+    }
+    .prologue-dialog-box {
+      padding: 16px 20px;
+      min-height: 142px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .prologue-narration {
+      margin: 0;
+      font-size: clamp(0.98rem, 2.4vw, 1.12rem);
+      color: #f6f8ff;
+      line-height: 1.75;
+      letter-spacing: 0.5px;
+    }
+    .prologue-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .prologue-dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .prologue-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: #1c2c66;
+      border: 1px solid #5979c9;
+    }
+    .prologue-dot.active {
+      background: var(--bronze-hi);
+      border-color: #fff6d1;
+      box-shadow: 0 0 8px rgba(255, 227, 148, 0.7);
+    }
+
+    /* =========================================================
+       SCREEN 1: 抽取案件底牌（牛皮紙卷宗）
+       ========================================================= */
+    .dossier-screen {
+      padding: 22px 18px 26px;
+      background:
+        repeating-linear-gradient(90deg, #3c2414 0px, #3c2414 38px, #331d10 38px, #331d10 40px);
+      min-height: 600px;
+    }
+
+    .dossier-header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .dossier-header h2 {
+      margin: 0 0 6px;
+      color: var(--bronze-hi);
+      text-shadow: 2px 2px 0 #1a0d05;
+      font-size: clamp(1.18rem, 3.2vw, 1.55rem);
+    }
+    .dossier-header p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: #f0dec0;
+    }
+
+    .folder-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 18px 0;
+    }
+    @media (max-width: 680px) {
+      .folder-grid { grid-template-columns: 1fr; }
+    }
+
+    .folder-card {
+      font-family: var(--font-pixel);
+      position: relative;
+      background: linear-gradient(180deg, #e0bf79 0%, #c49b4f 100%);
+      color: #291c0a;
+      border: 3px solid #6b491a;
+      border-radius: 6px;
+      padding: 18px 14px 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #261408, inset 0 2px 0 #f7e3b0;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+      text-align: left;
+    }
+    .folder-card::before {
+      content: '機密卷宗';
+      position: absolute;
+      top: -12px;
+      left: 12px;
+      background: #c99e4c;
+      border: 2px solid #6b491a;
+      border-bottom: none;
+      padding: 1px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border-radius: 4px 4px 0 0;
+      color: #3a2308;
+    }
+    .folder-card:hover {
+      transform: translateY(-4px);
+      border-color: #fff2b2;
+    }
+    .folder-card.selected {
+      transform: translateY(-4px);
+      border-color: #fff7d1;
+      box-shadow: 0 0 0 3px var(--gold), 0 8px 0 #261408;
+      background: linear-gradient(180deg, #f7e2a1 0%, #dbaf5c 100%);
+    }
+
+    .folder-seal {
+      display: inline-block;
+      background: #8a2020;
+      color: #fff;
+      font-size: 0.78rem;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-bottom: 6px;
+    }
+    .folder-title {
+      font-size: 1.06rem;
+      font-weight: 900;
+      margin: 0 0 6px;
+    }
+    .folder-desc {
+      font-size: 0.84rem;
+      color: #4f3615;
+      margin: 0;
+    }
+
+    .dossier-reveal {
+      margin-top: 16px;
+      padding: 16px 18px;
+      display: none;
+    }
+    .dossier-reveal.visible {
+      display: block;
+    }
+    .dossier-reveal h3 {
+      margin: 0 0 8px;
+      color: var(--bronze-hi);
+      font-size: 1.06rem;
+    }
+    .dossier-reveal p {
+      margin: 0 0 14px;
+      font-size: 0.96rem;
+      color: #eef4ff;
+      line-height: 1.65;
+    }
+
+    /* =========================================================
+       SCREEN 2: 主戰鬥畫面
+       ========================================================= */
+    .battle-screen {
+      padding: 10px;
+      background: #0b0e18;
+    }
+
+    .hud-bar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    @media (max-width: 700px) {
+      .hud-bar {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+
+    .hp-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .hp-block.enemy {
+      align-items: flex-end;
+    }
+    @media (max-width: 700px) {
+      .hp-block.enemy { align-items: flex-start; }
+    }
+
+    .hp-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .char-label {
+      font-weight: 700;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .hp-num {
+      font-size: 0.86rem;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .hp-track {
+      width: 100%;
+      height: 15px;
+      background: #070b1a;
+      border: 2px solid #d4e0ff;
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hp-delay {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 100%;
+      background: #ffe066;
+      transition: width 0.85s ease 0.25s;
+    }
+    .hp-fill {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      background: var(--hp-green);
+      transition: width 0.35s ease, background-color 0.3s ease;
+      box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .shield-badge {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      padding: 1px 6px;
+      background: linear-gradient(180deg, #f5cb42 0%, #a8720c 100%);
+      color: #1f1302;
+      border: 1px solid #fff4b8;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      cursor: help;
+    }
+    .shield-badge.active { display: inline-flex; }
+
+    .hud-center {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .turn-pill {
+      background: #091336;
+      border: 2px solid var(--bronze-mid);
+      color: var(--bronze-hi);
+      padding: 2px 10px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .hud-tools {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* 480×220 中央 16-bit 動態法庭舞台 */
+    .stage-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 480 / 220;
+      border: 3px solid var(--bronze-mid);
+      box-shadow: inset 0 0 0 1px var(--bronze-hi), 0 6px 18px rgba(0, 0, 0, 0.72);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #1f130c;
+      margin-bottom: 8px;
+    }
+    #stageCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .dmg-float {
+      position: absolute;
+      font-family: var(--font-pixel);
+      font-size: clamp(1.35rem, 3.6vw, 2.1rem);
+      font-weight: 900;
+      pointer-events: none;
+      z-index: 20;
+      text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+      animation: dmgBounce 1.15s ease-out forwards;
+    }
+    .dmg-float.dmg-enemy { color: #ffdf4d; }
+    .dmg-float.dmg-player { color: #ff5454; }
+    .dmg-float.dmg-zero { color: #d1dbf2; font-size: clamp(1rem, 2.6vw, 1.35rem); }
+    @keyframes dmgBounce {
+      0% { opacity: 0; transform: translate(-50%, 10px) scale(0.7); }
+      18% { opacity: 1; transform: translate(-50%, -22px) scale(1.2); }
+      45% { opacity: 1; transform: translate(-50%, -12px) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -34px) scale(0.95); }
+    }
+
+    .interlude-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 11, 24, 0.94);
+      z-index: 35;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .interlude-overlay.active { display: flex; }
+    .interlude-icon {
+      font-size: 2.6rem;
+      animation: interludePulse 0.6s ease-in-out infinite alternate;
+    }
+    @keyframes interludePulse {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(-6px) scale(1.08); }
+    }
+    .interlude-text {
+      color: var(--bronze-hi);
+      font-size: clamp(1rem, 2.8vw, 1.3rem);
+      letter-spacing: 2px;
+    }
+
+    /* 下方對話視窗（128×128 PS1 頭像 + 打字機文本） */
+    .dialog-box {
+      display: flex;
+      gap: 12px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      min-height: 114px;
+      cursor: pointer;
+    }
+    .portrait-frame {
+      flex: 0 0 92px;
+      width: 92px;
+      height: 92px;
+      border: 2px solid var(--bronze-hi);
+      background: linear-gradient(180deg, #162966 0%, #091230 100%);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.75);
+      align-self: center;
+    }
+    @media (max-width: 520px) {
+      .portrait-frame {
+        flex: 0 0 74px;
+        width: 74px;
+        height: 74px;
+      }
+    }
+    #portraitCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .dialog-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+    }
+    .speaker-name {
+      display: inline-block;
+      color: var(--bronze-hi);
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+    .dialog-text {
+      font-size: clamp(0.92rem, 2.3vw, 1.03rem);
+      color: #f4f7ff;
+      margin: 0;
+      word-break: break-word;
+    }
+    .dialog-next-hint {
+      align-self: flex-end;
+      color: var(--gold);
+      font-size: 0.8rem;
+      margin-top: 4px;
+      opacity: 0;
+    }
+    .dialog-next-hint.visible {
+      opacity: 1;
+      animation: blinkCursor 0.8s steps(2, start) infinite;
+    }
+
+    /* 三選項行動視窗 */
+    .options-box {
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .options-box.locked {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .option-btn {
+      font-family: var(--font-pixel);
+      width: 100%;
+      text-align: left;
+      background: rgba(8, 17, 52, 0.68);
+      color: #eef4ff;
+      border: 2px solid transparent;
+      border-radius: 4px;
+      padding: 9px 10px;
+      font-size: clamp(0.86rem, 2.15vw, 0.96rem);
+      line-height: 1.48;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      transition: background 0.1s ease, border-color 0.1s ease;
+    }
+    .option-btn:hover,
+    .option-btn.focused {
+      background: rgba(54, 102, 232, 0.45);
+      border-color: var(--bronze-hi);
+      color: #ffffff;
+    }
+    .option-cursor {
+      flex: 0 0 16px;
+      color: var(--gold);
+      visibility: hidden;
+      font-weight: 900;
+    }
+    .option-btn:hover .option-cursor,
+    .option-btn.focused .option-cursor {
+      visibility: visible;
+    }
+    .option-num {
+      flex: 0 0 20px;
+      color: #8fb4ff;
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       心證判定彈窗 & 卷宗彈窗
+       ========================================================= */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 7, 16, 0.8);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    .modal-backdrop.active { display: flex; }
+
+    .ruling-modal {
+      width: 100%;
+      max-width: 620px;
+      background: var(--parchment);
+      color: var(--ink);
+      border: 4px solid #4a351c;
+      box-shadow: inset 0 0 0 2px #b59b69, 0 14px 40px rgba(0, 0, 0, 0.8);
+      border-radius: 6px;
+      padding: 18px 20px;
+    }
+    .ruling-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #8a734a;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+    .ruling-title {
+      font-size: 1.12rem;
+      font-weight: 900;
+      color: #36220c;
+      margin: 0;
+    }
+    .ruling-delta {
+      font-size: 0.92rem;
+      font-weight: 900;
+      padding: 2px 10px;
+      border-radius: 4px;
+      border: 2px solid currentColor;
+      white-space: nowrap;
+    }
+    .ruling-delta.good { color: #126b32; background: #dcfce7; }
+    .ruling-delta.bad { color: #a81c1c; background: #fee2e2; }
+    .ruling-delta.neutral { color: #475569; background: #e2e8f0; }
+
+    .ruling-modal { max-height: 88vh; overflow-y: auto; }
+    .ruling-sources { border-top: 1px solid currentColor; margin: 8px 0; padding-top: 4px; font-size: .84rem; line-height: 1.6; }
+    .ruling-sources p { margin: 4px 0; }
+    .ruling-body {
+      font-size: 0.98rem;
+      line-height: 1.68;
+      margin: 0 0 16px;
+      color: #241d15;
+    }
+    .ruling-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .dossier-modal {
+      width: 100%;
+      max-width: 560px;
+      padding: 18px 20px;
+    }
+    .dossier-modal h3 {
+      margin: 0 0 10px;
+      color: var(--bronze-hi);
+      border-bottom: 2px solid #4a63a3;
+      padding-bottom: 6px;
+    }
+    .dossier-section {
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+    }
+    .dossier-section-label {
+      color: #9ec0ff;
+      font-size: 0.82rem;
+      margin-bottom: 4px;
+    }
+    .evidence-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .evidence-chip {
+      background: #1a2d6b;
+      border: 1px solid #8eb0ff;
+      padding: 3px 9px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      color: #fff;
+    }
+
+    /* =========================================================
+       SCREEN 3: 民事判決書結算畫面
+       ========================================================= */
+    .ending-screen {
+      padding: 22px 16px 28px;
+      background: #141724;
+      min-height: 600px;
+    }
+
+    .judgment-paper {
+      position: relative;
+      max-width: 740px;
+      margin: 0 auto;
+      background: var(--parchment);
+      color: var(--ink);
+      border: 4px solid #3d2c19;
+      box-shadow: inset 0 0 0 3px #c7b285, 0 10px 30px rgba(0, 0, 0, 0.72);
+      border-radius: 4px;
+      padding: 24px 22px;
+    }
+
+    .judgment-court {
+      text-align: center;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-weight: 900;
+      letter-spacing: 4px;
+      border-bottom: 2px double #5c462b;
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+    }
+
+    .judgment-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #4f4130;
+      margin-bottom: 14px;
+    }
+
+    .judgment-main-label {
+      font-weight: 900;
+      font-size: 1rem;
+      letter-spacing: 4px;
+      margin-bottom: 6px;
+      color: #36220c;
+    }
+    .judgment-main-text {
+      font-size: 1.02rem;
+      line-height: 1.7;
+      min-height: 58px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px dashed #9e885d;
+      margin-bottom: 16px;
+    }
+
+    .verdict-stamp {
+      position: absolute;
+      top: 56px;
+      right: 22px;
+      border: 4px solid var(--stamp-red);
+      color: var(--stamp-red);
+      padding: 6px 12px;
+      font-size: clamp(1.05rem, 3vw, 1.35rem);
+      font-weight: 900;
+      letter-spacing: 3px;
+      transform: rotate(-11deg) scale(2.2);
+      opacity: 0;
+      background: rgba(244, 235, 208, 0.85);
+      box-shadow: inset 0 0 0 2px var(--stamp-red);
+      pointer-events: none;
+    }
+    .verdict-stamp.stamped {
+      animation: stampSlam 0.32s cubic-bezier(.22,.68,.43,1.2) forwards;
+    }
+    .verdict-stamp.defeat {
+      border-color: #7d1414;
+      color: #7d1414;
+      box-shadow: inset 0 0 0 2px #7d1414;
+    }
+    @keyframes stampSlam {
+      0% { opacity: 0; transform: rotate(-16deg) scale(2.4); }
+      70% { opacity: 1; transform: rotate(-11deg) scale(0.94); }
+      100% { opacity: 1; transform: rotate(-11deg) scale(1); }
+    }
+
+    .bonus-box {
+      background: #fff6db;
+      border: 2px solid #b8841c;
+      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+      color: #4a3104;
+      display: none;
+    }
+    .bonus-box.visible { display: block; }
+
+    .log-title {
+      font-weight: 900;
+      font-size: 0.96rem;
+      margin: 0 0 8px;
+      border-left: 4px solid #4a351c;
+      padding-left: 8px;
+    }
+    .battle-log-list {
+      list-style: none;
+      margin: 0 0 18px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .battle-log-item {
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid #c2af84;
+      border-radius: 4px;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    .log-head {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      margin-bottom: 3px;
+      gap: 8px;
+    }
+    .log-good { color: #126b32; }
+    .log-bad { color: #a81c1c; }
+    .log-neutral { color: #475569; }
+
+    .ending-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-shell">
+    <div id="consoleFrame" class="console-frame">
+      <!-- CRT 掃描線覆蓋層 -->
+      <div class="crt-overlay" aria-hidden="true"></div>
+
+      <!-- =====================================================
+           SCREEN 0: 標題畫面
+           ===================================================== -->
+      <section id="screenTitle" class="screen title-screen active">
+        <div class="title-badge">SFC 16-BIT × PS1 32-BIT 訴訟實戰 RPG 第一彈</div>
+        <h1 class="title-main">《神秘的票據之謎》</h1>
+        <p class="title-sub">300萬元本票裁定攻防戰</p>
+
+        <div class="title-preview-wrap">
+          <canvas id="titleStageCanvas" class="pixel-art" width="480" height="220"></canvas>
+        </div>
+
+        <button id="btnStartGame" class="retro-btn gold-btn" style="font-size:1.12rem;padding:11px 30px;">
+          <span class="blink-arrow">▶</span> 開始遊戲 (START)
+        </button>
+
+        <div class="title-hint">
+          支援滑鼠點擊、觸控與鍵盤操作（↑↓ 選擇、Enter / 空白鍵 確認、數字鍵 1-3）
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SCREEN 0.5: 序章劇情畫面（收到本票裁定）
+           ===================================================== -->
+      <section id="screenPrologue" class="screen prologue-screen">
+        <div class="prologue-topbar">
+          <div class="prologue-chapter-tag">📜 序章：突如其來的雙掛號</div>
+          <button id="btnSkipPrologue" class="retro-btn mini-btn">略過序章 ⏭</button>
+        </div>
+
+        <div class="prologue-stage-wrap">
+          <canvas id="prologueCanvas" class="pixel-art" width="480" height="220"></canvas>
+        </div>
+
+        <div id="prologueDialogBox" class="rpg-panel prologue-dialog-box" title="點擊或按空白鍵繼續">
+          <div>
+            <span class="speaker-name">【事件經過】</span>
+            <p id="prologueText" class="prologue-narration"></p>
+          </div>
+          <div class="prologue-footer">
+            <div class="prologue-dots">
+              <span class="prologue-dot active" data-beat="0"></span>
+              <span class="prologue-dot" data-beat="1"></span>
+              <span class="prologue-dot" data-beat="2"></span>
+            </div>
+            <div id="prologueActionArea">
+              <span id="prologueNextHint" class="dialog-next-hint visible">▼ 點擊或按空白鍵繼續</span>
+              <button id="btnToDossier" class="retro-btn gold-btn" style="display:none;">
+                揭開本案真相（選擇案件底牌） ▶
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SCREEN 1: 開局階段 — 抽取「案件底牌」
+           ===================================================== -->
+      <section id="screenDossier" class="screen dossier-screen">
+        <div class="dossier-header">
+          <h2>這張 300 萬元本票背後，究竟發生了什麼事？</h2>
+          <p>請選擇一種真實案情（或隨機盲抽），這將成為你起訴與開庭的事實底牌。</p>
+        </div>
+
+        <div class="folder-grid">
+          <button class="folder-card" data-route="A">
+            <span class="folder-seal">路線 A</span>
+            <div class="folder-title">未收借款</div>
+            <p class="folder-desc">簽了本票卻沒拿到錢？點擊檢視真相…</p>
+          </button>
+
+          <button class="folder-card" data-route="B">
+            <span class="folder-seal">路線 B</span>
+            <div class="folder-title">票據偽造</div>
+            <p class="folder-desc">根本沒開過這張票？點擊檢視真相…</p>
+          </button>
+
+          <button class="folder-card" data-route="C">
+            <span class="folder-seal">路線 C</span>
+            <div class="folder-title">已還清款項</div>
+            <p class="folder-desc">錢早就還完卻忘記拿回本票？點擊檢視真相…</p>
+          </button>
+        </div>
+
+        <div style="text-align:center;">
+          <button id="btnRandomRoute" class="retro-btn">🎲 隨機抽取真相</button>
+        </div>
+
+        <div id="dossierReveal" class="rpg-panel dossier-reveal">
+          <h3 id="revealTitle"></h3>
+          <p id="revealFact"></p>
+          <div style="text-align:right;">
+            <button id="btnConfirmRoute" class="retro-btn gold-btn">確認底牌・進入第一回合 ▶</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SCREEN 2: 主戰鬥畫面
+           ===================================================== -->
+      <section id="screenBattle" class="screen battle-screen">
+        <header class="rpg-box hud-bar">
+          <div class="hp-block">
+            <div class="hp-header">
+              <span class="char-label">
+                原告 (你)
+                <span id="shieldBadge" class="shield-badge" title="你已於裁定送達後20日內，以本票遭偽造為由，向原裁定法院提起確認之訴。日後遭執行時，向執行法院證明已如此起訴，法院應停止執行。執票人仍得聲請供擔保續行（非訟事件法第195條）。">
+                  🛡 免擔保停執護盾
+                </span>
+              </span>
+              <span id="playerHpText" class="hp-num">100/100</span>
+            </div>
+            <div class="hp-track">
+              <div id="playerHpDelay" class="hp-delay"></div>
+              <div id="playerHpBar" class="hp-fill"></div>
+            </div>
+          </div>
+
+          <div class="hud-center">
+            <div id="turnTag" class="turn-pill">TURN 1/4 ｜ 路線 A</div>
+            <div class="hud-tools">
+              <button id="btnDossierModal" class="retro-btn mini-btn">📁 卷宗/底牌</button>
+              <button id="btnCrtToggle" class="retro-btn mini-btn">📺 CRT</button>
+              <button id="btnSoundToggle" class="retro-btn mini-btn active-toggle">🔊 音效</button>
+            </div>
+          </div>
+
+          <div class="hp-block enemy">
+            <div class="hp-header">
+              <span class="char-label">被告 老王</span>
+              <span id="enemyHpText" class="hp-num">100/100</span>
+            </div>
+            <div class="hp-track">
+              <div id="enemyHpDelay" class="hp-delay"></div>
+              <div id="enemyHpBar" class="hp-fill"></div>
+            </div>
+          </div>
+        </header>
+
+        <div id="stageWrap" class="stage-wrap">
+          <canvas id="stageCanvas" class="pixel-art" width="480" height="220"></canvas>
+          <div id="interludeOverlay" class="interlude-overlay">
+            <div id="interludeIcon" class="interlude-icon">✉️</div>
+            <div id="interludeText" class="interlude-text">數週後……</div>
+          </div>
+        </div>
+
+        <div id="dialogBox" class="rpg-box dialog-box" title="點擊可跳過打字或繼續下一句">
+          <div class="portrait-frame">
+            <canvas id="portraitCanvas" class="pixel-art" width="128" height="128"></canvas>
+          </div>
+          <div class="dialog-content">
+            <div>
+              <span id="speakerName" class="speaker-name">系統提示</span>
+              <p id="dialogText" class="dialog-text"></p>
+            </div>
+            <span id="dialogNextHint" class="dialog-next-hint">▼ 點擊或按空白鍵繼續</span>
+          </div>
+        </div>
+
+        <div id="optionsBox" class="rpg-box options-box"></div>
+      </section>
+
+      <!-- =====================================================
+           SCREEN 3: 民事判決書結算畫面
+           ===================================================== -->
+      <section id="screenEnding" class="screen ending-screen">
+        <div class="judgment-paper">
+          <div id="verdictStamp" class="verdict-stamp">一審勝訴</div>
+          <div class="judgment-court">臺灣地方法院民事判決</div>
+          <div class="judgment-meta">
+            <span id="endingCaseNo">案由：確認本票債權不存在</span>
+            <span id="endingScore">最終心證：原告 100 HP ／ 被告 0 HP</span>
+          </div>
+
+          <div class="judgment-main-label">主　文</div>
+          <div id="endingMainText" class="judgment-main-text"></div>
+
+          <div id="routeBBonus" class="bonus-box">
+            
+          </div>
+
+          <div class="log-title">本局審理紀錄</div>
+          <ul id="battleLogList" class="battle-log-list"></ul>
+
+          <div class="ending-actions">
+            <button id="btnReplayOther" class="retro-btn gold-btn">▶ 重玩／切換其他路線</button>
+            <button id="btnBackTitle" class="retro-btn">▶ 回到標題</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- 心證判定彈窗 -->
+  <div id="rulingBackdrop" class="modal-backdrop">
+    <div class="ruling-modal" role="dialog" aria-modal="true" aria-labelledby="rulingTitle">
+      <div class="ruling-header">
+        <h3 id="rulingTitle" class="ruling-title">【心證判定】</h3>
+        <span id="rulingDelta" class="ruling-delta good">老王 -35 HP</span>
+      </div>
+      <p id="rulingBody" class="ruling-body"></p>
+      <div id="rulingSources"></div><small>HP 為本回合遊戲計分。</small>
+      <div class="ruling-footer">
+        <button id="btnRulingNext" class="retro-btn gold-btn">▶ 繼續審理 (Enter)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 卷宗 / 底牌查看彈窗 -->
+  <div id="dossierBackdrop" class="modal-backdrop">
+    <div class="rpg-box dossier-modal" role="dialog" aria-modal="true">
+      <h3>📁 本案卷宗與底牌</h3>
+      <div class="dossier-section">
+        <div class="dossier-section-label">真實案情底牌</div>
+        <div id="modalRouteTitle" style="color:var(--gold);font-weight:700;margin-bottom:4px;"></div>
+        <div id="modalRouteFact"></div>
+      </div>
+      <div class="dossier-section">
+        <div class="dossier-section-label">目前程序狀態</div>
+        <div id="modalBuffStatus">無特殊護盾</div>
+      </div>
+      <div class="dossier-section">
+        <div class="dossier-section-label">已登場證物</div>
+        <div id="modalEvidenceList" class="evidence-chips"></div>
+      </div>
+      <div style="text-align:right;margin-top:14px;">
+        <button id="btnCloseDossier" class="retro-btn">關閉卷宗</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =====================================================================
+       一、Web Audio API 8-bit / 16-bit 復古音效合成器
+       ===================================================================== */
+    const SoundFX = (() => {
+      let ctx = null;
+      let enabled = true;
+
+      function ensureCtx() {
+        if (!enabled) return null;
+        try {
+          if (!ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return null;
+            ctx = new AudioCtx();
+          }
+          if (ctx.state === 'suspended') ctx.resume();
+          return ctx;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function playTone(freq, duration, type = 'square', gainVal = 0.08, delay = 0, slideTo = null) {
+        const c = ensureCtx();
+        if (!c) return;
+        try {
+          const now = c.currentTime + delay;
+          const osc = c.createOscillator();
+          const gain = c.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, now);
+          if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, now + duration);
+          gain.gain.setValueAtTime(gainVal, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+          osc.connect(gain);
+          gain.connect(c.destination);
+          osc.start(now);
+          osc.stop(now + duration + 0.01);
+        } catch (e) {}
+      }
+
+      function playNoise(duration, gainVal = 0.1, delay = 0) {
+        const c = ensureCtx();
+        if (!c) return;
+        try {
+          const now = c.currentTime + delay;
+          const bufferSize = Math.max(1, Math.floor(c.sampleRate * duration));
+          const buffer = c.createBuffer(1, bufferSize, c.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+          const noise = c.createBufferSource();
+          noise.buffer = buffer;
+          const filter = c.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(950, now);
+          const gain = c.createGain();
+          gain.gain.setValueAtTime(gainVal, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(c.destination);
+          noise.start(now);
+        } catch (e) {}
+      }
+
+      return {
+        isEnabled: () => enabled,
+        toggle: () => {
+          enabled = !enabled;
+          if (enabled) SoundFX.confirm();
+          return enabled;
+        },
+        cursor: () => playTone(620, 0.045, 'square', 0.05),
+        confirm: () => {
+          playTone(523, 0.06, 'square', 0.06, 0);
+          playTone(784, 0.09, 'square', 0.06, 0.055);
+        },
+        paper: () => playNoise(0.09, 0.08),
+        blip: (speaker) => {
+          const map = { judge: 520, player: 440, laowang: 270, system: 680 };
+          const base = map[speaker] || 480;
+          playTone(base + (Math.random() * 35 - 17), 0.032, 'square', 0.032);
+        },
+        gavel: () => {
+          playTone(170, 0.12, 'triangle', 0.18, 0, 65);
+          playNoise(0.09, 0.14, 0);
+        },
+        hitEnemy: () => {
+          playNoise(0.11, 0.14, 0);
+          playTone(420, 0.08, 'sawtooth', 0.09, 0, 140);
+          playTone(580, 0.12, 'square', 0.08, 0.07, 820);
+        },
+        hitPlayer: () => {
+          playNoise(0.15, 0.16, 0);
+          playTone(210, 0.22, 'sawtooth', 0.11, 0, 75);
+        },
+        neutral: () => {
+          playTone(340, 0.08, 'triangle', 0.07, 0);
+          playTone(310, 0.1, 'triangle', 0.07, 0.08);
+        },
+        shield: () => {
+          playTone(523, 0.08, 'square', 0.07, 0);
+          playTone(659, 0.08, 'square', 0.07, 0.07);
+          playTone(784, 0.08, 'square', 0.07, 0.14);
+          playTone(1046, 0.2, 'square', 0.08, 0.21);
+        },
+        stamp: () => {
+          playTone(120, 0.16, 'triangle', 0.22, 0, 48);
+          playNoise(0.12, 0.16, 0);
+        },
+        victory: () => {
+          const notes = [523, 659, 784, 1046, 784, 1046];
+          const times = [0, 0.11, 0.22, 0.34, 0.50, 0.62];
+          notes.forEach((n, i) => playTone(n, i === 5 ? 0.35 : 0.1, 'square', 0.075, times[i]));
+        },
+        defeat: () => {
+          const notes = [392, 370, 349, 293];
+          notes.forEach((n, i) => playTone(n, i === 3 ? 0.42 : 0.16, 'sawtooth', 0.07, i * 0.18));
+        }
+      };
+    })();
+
+    /* =====================================================================
+       二、完整遊戲劇本資料（實務修正版）
+       ===================================================================== */
+    const RULING_SOURCES = {
+  "procedure": "士林地院114年度抗字第127號",
+  "execution": "高雄地院114年度雄簡字第2507號",
+  "stay": "臺北地院113年度聲字第551號",
+  "cause": "最高法院114年度台上字第943號",
+  "cash": "最高法院105年度台簡上字第33號",
+  "payment": "臺灣高等法院臺中分院108年度重上更二字第24號",
+  "form": "臺北地院111年度抗字第319號",
+  "admit": "彰化地院110年度彰訴字第2號",
+  "evidence": "最高法院111年度台上字第44號",
+  "seal": "臺中地院111年度中簡字第655號",
+  "genuine": "士林地院114年度湖簡字第908號",
+  "sample": "南投地院111年度訴字第57號",
+  "due": "苗栗地院113年度簡上字第70號",
+  "offset": "臺北地院111年度重訴字第1128號",
+  "order": "臺灣高等法院113年度重上字第484號",
+  "rate": "新北地院113年度訴字第106號",
+  "write": "民事訴訟法第360條"
+};
+
+    const ROUTES = {
+      A: {
+        id: 'A',
+        label: '路線 A',
+        name: '底牌 A：未收借款（原因關係不存在線）',
+        fact: '原擬向老王借款 300 萬元並先簽發本票交付，事後老王反悔未撥款，也沒歸還本票。',
+        turns: {
+          2: {
+            title: '準備程序交鋒',
+            evidence: 'note',
+            evidenceLabel: '300 萬元本票原本',
+            dialogues: [
+              { speaker: 'judge', name: '法官', mood: 'calm', text: '原告，你承認這張 300 萬元本票是你親筆簽的，那你當初為什麼會簽本票給老王？' },
+              { speaker: 'laowang', name: '被告 老王', mood: 'smug', text: '本票是無因證券！白紙黑字就在這，我根本不用解釋這張票怎麼來的！' }
+            ],
+            options: [
+              {
+                text: '我本來要向老王借三百萬元，先簽了本票給他。後來他沒把錢給我，也沒把本票還我。',
+                effect: { target: 'enemy', dmg: 35 },
+                sources: ["cause"],
+                ruling: '你已說明為何簽票，也指出爭執的是借款有無交付。法院接著可以詢問老王對這段經過有何意見。'
+              },
+              {
+                text: '強調本票只是形式文件，我確實沒欠老王半毛錢，不必多談簽票緣由；請老王先證明他有借錢，否則應判我勝訴。',
+                effect: { target: 'player', dmg: 35 },
+                sources: ["cause"],
+                ruling: '票據為無因證券，發票人承認簽發本票卻拒絕說明簽發原因，不利於原因關係抗辯之認定。'
+              },
+              {
+                text: '主張本票背後沒有附上正式的借貸契約書，僅憑單獨一張本票欠缺法定要式，請求法官直接認定這張本票無效。',
+                effect: { target: 'player', dmg: 40 },
+                sources: ["form"],
+                ruling: '本票只要具備《票據法》第 120 條所定絕對必要記載事項即為有效，不以另立借據為要件。'
+              }
+            ]
+          },
+          3: {
+            title: '破解「300 萬現金交付」',
+            evidence: 'note',
+            evidenceLabel: '300 萬元本票原本',
+            dialogues: [
+              { speaker: 'laowang', name: '被告 老王', mood: 'smug', text: '好啦！原因關係就是你跟我借 300 萬元！我當天在咖啡廳直接拿 300 萬元現金交給你了，本票就是證據！' }
+            ],
+            options: [
+              {
+                text: '指出老王既承認是消費借貸，依法律規定交付金錢的舉證責任完全在他，我方不需聲請任何調查，靜候判決即可。',
+                effect: { target: 'none', dmg: 0 },
+                sources: ["cash"],
+                ruling: '就消費借貸交付事實，發票人本不負舉證責任，不聲請調查並不生失權或扣分效果；惟未主動聲請調查客觀金流，無法進一步削弱對造陳述。'
+              },
+              {
+                text: '我那天確實收到老王給的三百萬元，但那是我們之前合作案的分潤，跟這張本票無關，請法官傳喚合作夥伴來作證釐清。',
+                effect: { target: 'player', dmg: 45 },
+                sources: ["admit"],
+                ruling: '你承認收到款項，與先前所說「沒收到現金」矛盾。至於這筆錢究竟是借款還是分潤，仍要看雙方提出的證據。'
+              },
+              {
+                text: '否認收過現金，除指出交付事實應由老王舉證外，並聲請函調老王當時的銀行提領紀錄，同時追問現金來源與搬運方式。',
+                effect: { target: 'enemy', dmg: 35 },
+                sources: ["cash"],
+                ruling: '依最高法院 105 年度台簡上字第 33 號判決意旨，執票人主張原因關係為消費借貸、發票人抗辯未收受借款時，應由執票人就借款交付事實負舉證責任；併聲請調閱對造銀行提領紀錄，可直接檢驗現金交付說詞是否合於經驗法則。'
+              }
+            ],
+            interludeAfter: {
+              icon: '🏦✉️',
+              text: '下次開庭，法官繼續調查現金的來源。'
+            }
+          },
+          4: {
+            title: '終局辯論',
+            evidence: 'bank',
+            evidenceLabel: '銀行帳戶函調明細',
+            dialogues: [
+              { speaker: 'system', name: '系統提示', mood: 'calm', text: '銀行函調結果顯示，老王在所稱交付日前後半年內，名下帳戶餘額從未超過 50 萬元，也無大額提領紀錄。' },
+              { speaker: 'laowang', name: '被告 老王', mood: 'sweat', text: '我拿的是家裡保險箱的現金。原告你有本事就證明你沒收過現金！' }
+            ],
+            options: [
+              {
+                text: '既然老王說錢放在家裡保險箱，立即聲請法官安排現場勘驗老王住處，確認保險箱大小與實際存放空間是否合理。',
+                effect: { target: 'player', dmg: 30 },
+                sources: ["evidence"],
+                ruling: '事後勘驗住處保險箱無法證明案發當時是否存有 300 萬元現金，依《民事訴訟法》第 286 條但書無調查必要。'
+              },
+              {
+                text: '指出老王資力與提領軌跡明顯不符，300 萬現金說詞違反經驗法則，且交付事實舉證不足，請法官依全辯論意旨判決。',
+                effect: { target: 'enemy', dmg: 30 },
+                sources: ["cash"],
+                ruling: '執票人就消費借貸交付事實舉證不足，且無資金來源與提領軌跡，法院得依《民事訴訟法》第 222 條斟酌全辯論意旨及調查證據之結果，為不利於執票人之認定。'
+              },
+              {
+                text: '既然雙方對有沒有給現金各執一詞、又沒有第三人在場，直接聲請法院安排兩造測謊，用科學儀器還原事實真相。',
+                effect: { target: 'player', dmg: 25 },
+                sources: ["evidence"],
+                ruling: '本案要查明的是現金如何交付。僅因兩造說法不同便要求測謊，尚未說明這項調查有何必要。'
+              }
+            ]
+          }
+        }
+      },
+
+      B: {
+        id: 'B',
+        label: '路線 B',
+        name: '底牌 B：票據偽造（票據真偽鑑定線）',
+        fact: '從未簽發這張 300 萬元本票，上面的簽名與印章都不是你本人所為。',
+        turns: {
+          2: {
+            title: '當庭提示原本——簽名與印文一次認否',
+            evidence: 'note',
+            evidenceLabel: '300 萬元本票原本',
+            dialogues: [
+              { speaker: 'judge', name: '法官', mood: 'calm', text: '原告，請看這張本票。上面的簽名和印文，是不是你本人簽蓋的？你要不要聲請鑑定？' }
+            ],
+            options: [
+              {
+                text: '我確認這個印文是我的私章蓋出來的，但簽名絕對不是我寫的；這張本票一定是老王趁我不注意偷拿印章去盜蓋的。',
+                effect: { target: 'player', dmg: 50 },
+                sources: ["seal"],
+                ruling: '依《民事訴訟法》第 358 條及最高法院 74 年台上字第 2143 號判決意旨，承認印文為真正即推定文書為真正，舉證責任反轉，改由發票人就印章係遭盜蓋之事實負舉證責任。'
+              },
+              {
+                text: '當庭明確否認簽名與印文的真正；並表示本票真偽應由執票人老王舉證，我方不主動聲請鑑定，看對造是否提出聲請。',
+                effect: { target: 'enemy', dmg: 35 },
+                sources: ["genuine"],
+                ruling: '依《民事訴訟法》第 357 條及最高法院 65 年度第 6 次民庭庭長會議決議，發票人否認本票簽名與印文之真正時，應由執票人就本票為真正之事實先負舉證責任。'
+              },
+              {
+                text: '當庭否認簽名與印文真正，同時為求速戰速決、盡早釐清事實，立刻主動向法官聲請由法院送請筆跡與印文鑑定。',
+                effect: { target: 'enemy', dmg: 35 },
+                sources: ["genuine"],
+                ruling: '原告已具體否認簽章真正，主動聲請鑑定也不改變舉證責任。'
+              }
+            ]
+          },
+          3: {
+            title: '比對樣本與調查配合',
+            evidence: 'note',
+            evidenceLabel: '300 萬元本票原本',
+            dialogues: [
+              { speaker: 'system', name: '系統提示', mood: 'calm', text: '老王要求比對簽章。法院決定送驗，請兩造先提出樣本。' },
+              { speaker: 'judge', name: '法官', mood: 'calm', text: '原告，請提出案發前後的親筆字跡文件並當庭書寫供比對；另外，本院將函調你的銀行開戶印鑑一併送鑑。' }
+            ],
+            options: [
+              {
+                text: '配合法院指示，主動提出案發前簽署的銀行文件、公文書等客觀原本供比對，並當庭自然書寫，也同意函調開戶印鑑。',
+                effect: { target: 'enemy', dmg: 35 },
+                sources: ["sample"],
+                ruling: '配合提出案發前之客觀筆跡樣本並同意函調開戶印鑑，符合《民事訴訟法》第 359 條核對筆跡、印跡之調查程序，亦避免構成證明妨礙。'
+              },
+              {
+                text: '強調證明本票真正是老王的責任，原告沒有義務替被告蒐證，因此拒絕提供私人文件與當庭書寫，請老王自己想辦法。',
+                effect: { target: 'player', dmg: 50 },
+                sources: ["sample", "write"],
+                ruling: '法院得命提出比對文件。無適當筆跡可核對時，得依民事訴訟法第360條命本人書寫。當事人無正當理由拒絕，準用第345條，法院應先給予辯論機會，再審酌是否作不利認定。'
+              },
+              {
+                text: '願意當庭書寫幾行字供筆跡比對，但反對法院函調銀行開戶印鑑與私人文件，主張這涉及個人金融隱私與帳戶安全。',
+                effect: { target: 'none', dmg: 0 },
+                sources: ["sample", "evidence"],
+                ruling: '原告願意書寫，也可以對函調範圍表示意見。法院得將調取資料限於印鑑樣本，無須一併調閱交易明細。'
+              }
+            ],
+            interludeAfter: {
+              icon: '🔍📜',
+              text: '數月後……法務部調查局鑑定報告出爐！'
+            }
+          },
+          4: {
+            title: '鑑定報告出爐',
+            evidence: 'report',
+            evidenceLabel: '調查局筆跡與印文鑑定報告',
+            dialogues: [
+              { speaker: 'system', name: '系統提示', mood: 'calm', text: '鑑定報告出爐——「印文與原告銀行開戶印鑑不符；簽名因比對樣本過少無法判讀」。' },
+              { speaker: 'laowang', name: '被告 老王', mood: 'sweat', text: '雖然印章不合、簽名看不出來，但我這裡有一張「不知名帳號說會還錢」的模糊截圖！我要聲請法院函調原告近十年的全部銀行帳戶與通聯紀錄！' }
+            ],
+            options: [
+              {
+                text: '既然清者自清，同意讓法院調閱近十年帳戶與通聯紀錄，用完整的客觀資料徹底堵住老王的嘴，免得他事後再上訴。',
+                effect: { target: 'player', dmg: 10 },
+                sources: ["evidence"],
+                ruling: '同意無必要之證據調查，可能延長審理並揭露與本案無關的私人資料，惟對實體勝敗並無重大不利影響。'
+              },
+              {
+                text: '既然老王想挖我隱私，我方也當庭聲請函調老王的財產清冊與刑事犯罪前科，證明他素行不良、有偽造票據的動機。',
+                effect: { target: 'player', dmg: 20 },
+                sources: ["evidence"],
+                ruling: '執票人之財產清冊與前科紀錄與本票真偽無直接關聯，依《民事訴訟法》第 286 條但書無調查必要。'
+              },
+              {
+                text: '指出印文不符且簽名無法證明真正，截圖亦無關聯；調閱十年帳戶欠缺具體事證，純屬摸索證明，請法官駁回並終結辯論。',
+                effect: { target: 'enemy', dmg: 30 },
+                sources: ["genuine", "evidence"],
+                ruling: '執票人未能舉證本票為真正；對造欠缺具體事證而聲請廣泛調閱十年帳戶與通聯紀錄，尚未說明這些資料如何證明簽章真正，法院得依《民事訴訟法》第 286 條但書不予調查。'
+              }
+            ]
+          }
+        }
+      },
+
+      C: {
+        id: 'C',
+        label: '路線 C',
+        name: '底牌 C：已還清款項（清償抗辯線）',
+        fact: '確曾借款 300 萬元並開立本票，雙方沒有約定利息。你在借款到期前已分次匯款 300 萬元至老王帳戶（未填備註、未留對話，也未收回本票）。',
+        turns: {
+          2: {
+            title: '本票未收回的舉證門檻',
+            evidence: 'note',
+            evidenceLabel: '300 萬元本票原本',
+            dialogues: [
+              { speaker: 'laowang', name: '被告 老王', mood: 'smug', text: '本票還好端端在我手上，沒拿回去就代表你沒還錢！' },
+              { speaker: 'judge', name: '法官', mood: 'calm', text: '原告，你主張已經清償完畢，有什麼證據？' }
+            ],
+            options: [
+              {
+                text: '當庭提出銀行匯款水單，證明我已分次匯款合計 300 萬元至老王帳戶，雖當時未填備註，但款項確實已如數入帳。',
+                effect: { target: 'enemy', dmg: 35 },
+                sources: ["payment"],
+                ruling: '依《民事訴訟法》第 277 條及臺灣高等法院臺中分院108年度重上更二字第24號判決意旨，票據債務人抗辯已清償者，應由債務人就清償事實負舉證責任。'
+              },
+              {
+                text: '指出本票沒有拿回來只是當初疏忽，既然老王堅持我還沒還清，應請老王提出對帳單或催告紀錄，證明這筆債仍存在。',
+                effect: { target: 'player', dmg: 45 },
+                sources: ["payment"],
+                ruling: '清償屬權利消滅事實，舉證責任在債務人而非債權人，拒不舉證將承擔敗訴不利益。'
+              },
+              {
+                text: '強調這張本票當初只簽了名與金額，上面的到期日是老王事後自行補填的，未經我同意擅自變更，這張本票已經無效。',
+                effect: { target: 'player', dmg: 35 },
+                sources: ["due"],
+                ruling: '依《票據法》第 120 條第 2 項，未載到期日之本票視為見票即付；主張到期日遭補填與清償抗辯無涉。'
+              }
+            ]
+          },
+          3: {
+            title: '老王反咬「那是還別筆債」',
+            evidence: 'slip',
+            evidenceLabel: '銀行匯款水單（共 300 萬元）',
+            dialogues: [
+              { speaker: 'laowang', name: '被告 老王', mood: 'smug', text: '沒錯，你確實匯了 300 萬給我；但那是你清償另一筆之前的借款，不是還這張本票的錢！' }
+            ],
+            options: [
+              {
+                text: '既然匯款沒寫備註被老王鑽漏洞，立刻聲請調閱兩人過去五年的所有往來帳目，設法證明我們之間從未有過其他債務。',
+                effect: { target: 'player', dmg: 40 },
+                sources: ["payment"],
+                ruling: '他筆債務存在與否並非由債務人負消極事實之舉證責任，聲請大範圍調閱往來帳目偏離舉證分配原則。'
+              },
+              {
+                text: '當庭否認另有他筆債務；指出老王既承認收到 300 萬元，卻抗辯是用來清償別筆欠款，應由老王舉證那筆債務存在。',
+                effect: { target: 'enemy', dmg: 35 },
+                sources: ["payment"],
+                ruling: '依實務見解（參照臺灣高等法院臺中分院 108 年度重上更二字第 24 號判決意旨），債務人已證明給付金錢清償，債權人抗辯係清償他筆債務時，應由債權人就他筆債務存在負舉證責任。'
+              },
+              {
+                text: '既然老王硬說那 300 萬元不是還這張本票，那我方就順勢主張以這筆 300 萬元款項與本票債務互為抵銷，同樣消滅債務。',
+                effect: { target: 'player', dmg: 25 },
+                sources: ["offset"],
+                ruling: '依《民法》第 334 條，抵銷須二人互負債務；本件原告並無對被告之反對債權可供抵銷，不符抵銷要件。'
+              }
+            ]
+          },
+          4: {
+            title: '老王最後掙扎——「先息後本」',
+            evidence: 'slip',
+            evidenceLabel: '銀行匯款水單（共 300 萬元）',
+            dialogues: [
+              { speaker: 'laowang', name: '被告 老王', mood: 'sweat', text: '好啦沒有別筆債！但當初借這 300 萬我們口頭講好月息 5 分（年息 60%）！依法律規定，你匯的 300 萬要先抵充利息，本金根本還沒還到！' }
+            ],
+            options: [
+              {
+                text: '反駁先息後本只適用於銀行或金融機構的定型化契約，私人之間借貸本就應該優先清償本金，老王的計算方式不合法。',
+                effect: { target: 'player', dmg: 30 },
+                sources: ["order"],
+                ruling: '《民法》第 323 條所定「先費用、次利息、次原本」之清償抵充順序，不以金融機構借款為限，私人借貸亦有適用。'
+              },
+              {
+                text: '主張年息 60% 已經構成刑法重利罪，既然這筆借貸涉及高利貸違法，整筆借款與這張本票都當然無效，不必再算利息。',
+                effect: { target: 'player', dmg: 35 },
+                sources: ["rate"],
+                ruling: '依《民法》第 205 條，約定利率逾週年 16% 者僅「超過部分之約定無效」，並非使整筆消費借貸契約或本票均歸無效。'
+              },
+              {
+                text: '先否認曾約定高額利息，要求老王舉證；並指出就算真有約定，法定利率上限是年息 16%，超過部分無效，無權拿來抵充。',
+                effect: { target: 'enemy', dmg: 30 },
+                sources: ["rate", "order"],
+                ruling: '利息約定之有無應由主張之債權人舉證；且依《民法》第 205 條，約定利率超過週年 16% 者，超過部分之約定無效，不得主張依《民法》第 323 條抵充。'
+              }
+            ]
+          }
+        }
+      }
+    };
+
+    const TURN_ONE = {
+      title: '程序起手式（裁定送達第 5 天，尚無執行事件）',
+      evidence: 'note',
+      evidenceLabel: '300 萬元本票裁定',
+      dialogues: [
+        { speaker: 'system', name: '系統提示', mood: 'calm', text: '剛收到法院寄來的 300 萬元本票裁定，老王還沒向執行處聲請強制執行。你要先採取哪一步？' }
+      ],
+      options: [
+        {
+          text: '向裁定法院提起「抗告」，在抗告狀裡把沒欠錢或被偽造的經過寫清楚，請法院直接廢棄這張本票裁定。',
+          effect: { target: 'player', dmg: 30, retry: true },
+          sources: ["procedure"],
+          ruling: '本票裁定及抗告程序僅作形式審查，不審究實體上債權是否存在或票據是否偽造，抗告將遭駁回。'
+        },
+        {
+          text: '提起「債務人異議之訴」並聲請「停止強制執行」，先把執行力擋下來，免得老王隨時拿著裁定去查封財產。',
+          effect: { target: 'player', dmg: 30, retry: true },
+          sources: ["execution"],
+          ruling: '依《強制執行法》第 14 條、第 18 條及最高法院 71 年度台上字第 4402 號判決意旨，債務人異議之訴與停止強制執行均須以強制執行程序已開始且尚未終結為前提，尚無執行事件時將遭駁回。'
+        },
+        {
+          text: '直接提起「確認本票債權不存在之訴」，由民事庭實質審理這筆債務，從根本上否定老王對這張本票的權利。',
+          effect: { target: 'advance', dmg: 0, grantShieldOnB: true },
+          sources: ["procedure"],
+          ruling: '本票裁定屬非訟程序、無實體既判力，不論是否已開始強制執行，均得提起確認本票債權不存在之訴。'
+        }
+      ]
+    };
+
+    /* =====================================================================
+       三、SFC 16-bit × PS1 32-bit 像素繪圖引擎 (480×220 舞台 + 128×128 頭像)
+       ===================================================================== */
+    const PixelRenderer = (() => {
+      const W = 480, H = 220;
+      const stageCanvas = document.getElementById('stageCanvas');
+      const sctx = stageCanvas.getContext('2d');
+      const titleStageCanvas = document.getElementById('titleStageCanvas');
+      const tsctx = titleStageCanvas.getContext('2d');
+      const prologueCanvas = document.getElementById('prologueCanvas');
+      const prctx = prologueCanvas.getContext('2d');
+      const portraitCanvas = document.getElementById('portraitCanvas');
+      const pctx = portraitCanvas.getContext('2d');
+
+      const bgCanvas = document.createElement('canvas');
+      bgCanvas.width = W;
+      bgCanvas.height = H;
+      const bctx = bgCanvas.getContext('2d');
+
+      const deskBgCanvas = document.createElement('canvas');
+      deskBgCanvas.width = W;
+      deskBgCanvas.height = H;
+      const dctx = deskBgCanvas.getContext('2d');
+
+      const BAYER4 = [
+        [0, 8, 2, 10],
+        [12, 4, 14, 6],
+        [3, 11, 1, 9],
+        [15, 7, 13, 5]
+      ];
+
+      const dustMotes = Array.from({ length: 24 }, () => ({
+        x: Math.random() * W,
+        y: 16 + Math.random() * 185,
+        vx: 0.08 + Math.random() * 0.16,
+        vy: 0.04 + Math.random() * 0.08,
+        size: Math.random() > 0.65 ? 2 : 1,
+        phase: Math.random() * Math.PI * 2
+      }));
+
+      const anim = {
+        tick: 0,
+        evidence: 'note',
+        playerAction: 'idle',
+        enemyAction: 'idle',
+        judgeAction: 'idle',
+        actionTimer: 0,
+        particles: []
+      };
+
+      function px(ctx, x, y, w, h, color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
+      }
+
+      /* -------------------------------------------------------------
+         離屏預渲染 480×220 16-bit 法庭背景
+         ------------------------------------------------------------- */
+      function buildCourtroomBackground() {
+        // 1. 深胡桃木護牆板
+        for (let y = 0; y < 142; y++) {
+          const shade = y < 22 ? '#291710' : y < 118 ? '#3d2216' : '#2e180f';
+          px(bctx, 0, y, W, 1, shade);
+        }
+        // 木板直向凹槽與高光
+        for (let x = 0; x < W; x += 24) {
+          px(bctx, x, 20, 2, 122, '#21110b');
+          px(bctx, x + 2, 20, 1, 122, '#593422');
+        }
+        // 橫向雕花飾條
+        px(bctx, 0, 18, W, 4, '#6b4128');
+        px(bctx, 0, 22, W, 2, '#1c0e08');
+        px(bctx, 0, 114, W, 4, '#734529');
+        px(bctx, 0, 118, W, 2, '#1c0e08');
+
+        // 2. 兩側拱形彩繪窗（透出天光）
+        [44, 388].forEach(wx => {
+          px(bctx, wx - 4, 18, 56, 86, '#24120b');
+          px(bctx, wx, 22, 48, 78, '#7aa4d6');
+          const wg = bctx.createLinearGradient(wx, 22, wx, 100);
+          wg.addColorStop(0, '#c2e0ff');
+          wg.addColorStop(0.6, '#7ba7db');
+          wg.addColorStop(1, '#4b6c9e');
+          bctx.fillStyle = wg;
+          bctx.fillRect(wx + 2, 24, 44, 74);
+          // 窗櫺
+          px(bctx, wx + 22, 24, 4, 74, '#361d12');
+          px(bctx, wx + 2, 50, 44, 3, '#361d12');
+          px(bctx, wx + 2, 74, 44, 3, '#361d12');
+        });
+
+        // 3. 大理石羅馬柱（四根）
+        [16, 114, 352, 450].forEach(cx => {
+          px(bctx, cx, 16, 14, 126, '#c7bfb0');
+          px(bctx, cx + 2, 16, 3, 126, '#ebe5d8');
+          px(bctx, cx + 10, 16, 4, 126, '#877f72');
+          // 柱頭與柱座
+          px(bctx, cx - 3, 14, 20, 6, '#e0d9c8');
+          px(bctx, cx - 2, 20, 18, 2, '#6e6659');
+          px(bctx, cx - 3, 136, 20, 6, '#b5ad9e');
+        });
+
+        // 4. 中央絲絨紅幕與金銅浮雕天秤
+        px(bctx, 158, 12, 164, 96, '#5c121e');
+        for (let x = 162; x < 318; x += 12) {
+          px(bctx, x, 14, 4, 92, '#7d1b2b');
+          px(bctx, x + 6, 14, 3, 92, '#3d0a12');
+        }
+        // 金色流蘇橫幔
+        px(bctx, 154, 10, 172, 8, '#c99232');
+        px(bctx, 154, 12, 172, 2, '#ffe394');
+        // 天秤徽章
+        px(bctx, 224, 24, 32, 32, '#3d0a12');
+        px(bctx, 226, 26, 28, 28, '#96681c');
+        px(bctx, 228, 28, 24, 24, '#5c121e');
+        px(bctx, 239, 31, 2, 17, '#ffe394');
+        px(bctx, 232, 34, 16, 2, '#ffe394');
+        px(bctx, 230, 40, 6, 3, '#ffd454');
+        px(bctx, 244, 40, 6, 3, '#ffd454');
+        px(bctx, 235, 48, 10, 2, '#ffe394');
+
+        // 5. Bayer 網點深紅透視地毯
+        for (let y = 142; y < H; y++) {
+          const t = (y - 142) / (H - 142);
+          for (let x = 0; x < W; x++) {
+            const bayer = BAYER4[y & 3][x & 3] / 16;
+            const inCenterRunner = x > 140 - t * 60 && x < 340 + t * 60;
+            if (inCenterRunner) {
+              const v = t * 0.55 + bayer * 0.45;
+              bctx.fillStyle = v > 0.72 ? '#8f2433' : v > 0.38 ? '#6e1925' : '#4a0f18';
+            } else {
+              const v = t * 0.5 + bayer * 0.4;
+              bctx.fillStyle = v > 0.68 ? '#4a2b1d' : v > 0.36 ? '#361e13' : '#24130c';
+            }
+            bctx.fillRect(x, y, 1, 1);
+          }
+        }
+        // 地毯金邊線
+        px(bctx, 0, 142, W, 2, '#1c0d07');
+      }
+
+      /* -------------------------------------------------------------
+         離屏預渲染 480×220 序章書桌背景
+         ------------------------------------------------------------- */
+      function buildPrologueDeskBackground() {
+        const wallG = dctx.createLinearGradient(0, 0, 0, 96);
+        wallG.addColorStop(0, '#0d1024');
+        wallG.addColorStop(1, '#1d1629');
+        dctx.fillStyle = wallG;
+        dctx.fillRect(0, 0, W, 96);
+
+        // 右上角暮色窗框
+        px(dctx, 352, 8, 108, 72, '#0c0b16');
+        const duskG = dctx.createLinearGradient(356, 12, 356, 76);
+        duskG.addColorStop(0, '#2a224d');
+        duskG.addColorStop(0.55, '#6b3b54');
+        duskG.addColorStop(1, '#b56343');
+        dctx.fillStyle = duskG;
+        dctx.fillRect(356, 12, 100, 64);
+        px(dctx, 356, 54, 24, 22, '#1c152b');
+        px(dctx, 384, 46, 30, 30, '#171124');
+        px(dctx, 418, 58, 38, 18, '#1e162e');
+        px(dctx, 405, 12, 3, 64, '#14101f');
+        px(dctx, 356, 42, 100, 3, '#14101f');
+
+        // 深胡桃木書桌表面
+        for (let y = 92; y < H; y++) {
+          const t = (y - 92) / (H - 92);
+          const plankEdge = (y - 92) % 24 === 0;
+          for (let x = 0; x < W; x++) {
+            const bayer = BAYER4[y & 3][x & 3] / 16;
+            const grain = Math.sin(x * 0.04 + y * 0.7) * 0.08;
+            if (plankEdge) {
+              dctx.fillStyle = '#1b0f0c';
+            } else {
+              const v = t * 0.45 + bayer * 0.4 + grain;
+              dctx.fillStyle = v > 0.72 ? '#593320' : v > 0.42 ? '#452619' : '#2e1812';
+            }
+            dctx.fillRect(x, y, 1, 1);
+          }
+        }
+        px(dctx, 0, 90, W, 3, '#734429');
+        px(dctx, 0, 93, W, 2, '#1f100c');
+
+        // 左側復古黃銅銀行家檯燈
+        px(dctx, 22, 118, 38, 8, '#8a5d1c');
+        px(dctx, 26, 114, 30, 4, '#c78c28');
+        px(dctx, 38, 56, 5, 58, '#c78c28');
+        px(dctx, 39, 56, 2, 58, '#ffe085');
+        px(dctx, 18, 40, 48, 18, '#195435');
+        px(dctx, 22, 42, 40, 8, '#2b8253');
+        px(dctx, 26, 43, 30, 3, '#52bd81');
+        px(dctx, 20, 56, 44, 3, '#ffe494');
+      }
+
+      /* -------------------------------------------------------------
+         繪製序章動態畫面
+         ------------------------------------------------------------- */
+      function renderPrologueFrame(ctx, tick, beat) {
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(deskBgCanvas, 0, 0);
+
+        // 1. 法院雙掛號信封
+        const envX = 82, envY = 122;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(envX + 5, envY + 5, 134, 72);
+        px(ctx, envX, envY, 134, 72, '#caa05a');
+        px(ctx, envX + 2, envY + 2, 130, 68, '#dbb46c');
+        px(ctx, envX + 8, envY + 8, 6, 56, '#b82525');
+        px(ctx, envX + 16, envY + 8, 2, 56, '#b82525');
+        px(ctx, envX + 82, envY + 10, 42, 16, '#b82525');
+        px(ctx, envX + 84, envY + 12, 38, 12, '#dbb46c');
+        px(ctx, envX + 88, envY + 16, 30, 4, '#b82525');
+        ctx.strokeStyle = '#332924';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(envX + 64, envY + 22, 10, 0, Math.PI * 2);
+        ctx.stroke();
+        px(ctx, envX + 34, envY + 38, 68, 3, '#3b2b1a');
+        px(ctx, envX + 34, envY + 46, 52, 3, '#4f3a24');
+        if (beat >= 1) {
+          for (let i = 0; i < 72; i += 8) {
+            px(ctx, envX + 130, envY + i, 4, 4, '#2e1812');
+          }
+        }
+
+        // 2. 展開的本票裁定書（第 2 幕起顯示）
+        if (beat >= 1) {
+          const docX = 232, docY = 48;
+          const docW = 196, docH = 154;
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.58)';
+          ctx.fillRect(docX + 6, docY + 6, docW, docH);
+          px(ctx, docX, docY, docW, docH, '#e8dcc0');
+          px(ctx, docX + 3, docY + 3, docW - 6, docH - 6, '#f7efda');
+          px(ctx, docX + 3, docY + 54, docW - 6, 2, 'rgba(130, 105, 70, 0.25)');
+          px(ctx, docX + 3, docY + 104, docW - 6, 2, 'rgba(130, 105, 70, 0.25)');
+
+          ctx.fillStyle = '#1f1914';
+          ctx.font = 'bold 11px "DotGothic16", "Noto Sans TC", monospace';
+          ctx.fillText('臺灣地方法院民事裁定', docX + 30, docY + 21);
+          px(ctx, docX + 18, docY + 26, docW - 36, 2, '#3d2e1e');
+          px(ctx, docX + 18, docY + 29, docW - 36, 1, '#7a6345');
+
+          ctx.font = 'bold 10px "DotGothic16", "Noto Sans TC", monospace';
+          ctx.fillStyle = '#33281d';
+          ctx.fillText('聲請人：老王（執票人）', docX + 18, docY + 46);
+          ctx.fillText('相對人：你（發票人）', docX + 18, docY + 66);
+
+          px(ctx, docX + 16, docY + 76, docW - 32, 34, '#fae6e6');
+          ctx.strokeStyle = '#b81d24';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(docX + 16, docY + 76, docW - 32, 34);
+          ctx.fillStyle = '#a8141b';
+          ctx.fillText('本票裁定・准許強制執行', docX + 26, docY + 91);
+          ctx.fillText('新臺幣 參佰萬元整', docX + 36, docY + 105);
+
+          px(ctx, docX + 18, docY + 120, 106, 3, '#6e5d49');
+          px(ctx, docX + 18, docY + 128, 92, 3, '#6e5d49');
+          px(ctx, docX + 18, docY + 136, 78, 3, '#6e5d49');
+
+          const sx = docX + 144, sy = docY + 114;
+          const sealPulse = 0.25 + 0.2 * Math.sin(tick * 0.1);
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          const sg = ctx.createRadialGradient(sx + 16, sy + 16, 4, sx + 16, sy + 16, 30);
+          sg.addColorStop(0, `rgba(255, 64, 64, ${sealPulse.toFixed(2)})`);
+          sg.addColorStop(1, 'rgba(255, 40, 40, 0)');
+          ctx.fillStyle = sg;
+          ctx.fillRect(sx - 16, sy - 16, 64, 64);
+          ctx.restore();
+
+          px(ctx, sx, sy, 32, 32, '#bf2020');
+          px(ctx, sx + 3, sy + 3, 26, 26, '#f7efda');
+          px(ctx, sx + 6, sy + 6, 20, 20, '#bf2020');
+          px(ctx, sx + 9, sy + 10, 4, 12, '#f7efda');
+          px(ctx, sx + 16, sy + 10, 7, 4, '#f7efda');
+          px(ctx, sx + 16, sy + 18, 7, 4, '#f7efda');
+        }
+
+        // 3. 檯燈暖金體積光與塵埃
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        const lampG = ctx.createLinearGradient(42, 56, 260, 210);
+        lampG.addColorStop(0, 'rgba(255, 224, 138, 0.28)');
+        lampG.addColorStop(0.55, 'rgba(255, 198, 96, 0.12)');
+        lampG.addColorStop(1, 'rgba(255, 180, 70, 0)');
+        ctx.fillStyle = lampG;
+        ctx.beginPath();
+        ctx.moveTo(22, 58);
+        ctx.lineTo(62, 58);
+        ctx.lineTo(395, 220);
+        ctx.lineTo(10, 220);
+        ctx.closePath();
+        ctx.fill();
+
+        dustMotes.forEach(m => {
+          m.x += m.vx * 0.7;
+          m.y += m.vy * 0.6;
+          if (m.x > W) m.x = 0;
+          if (m.y > 210) m.y = 18;
+          const a = 0.25 + 0.55 * (0.5 + 0.5 * Math.sin(tick * 0.06 + m.phase));
+          ctx.fillStyle = `rgba(255, 232, 155, ${a.toFixed(2)})`;
+          ctx.fillRect(Math.floor(m.x), Math.floor(m.y), m.size, m.size);
+        });
+        ctx.restore();
+      }
+
+      /* -------------------------------------------------------------
+         繪製舞台角色：法官（短髮＋寶藍滾邊臺灣法袍）、書記官、原告、老王
+         ------------------------------------------------------------- */
+      function drawJudgeSprite(ctx, x, y, tick, action) {
+        const bob = Math.sin(tick * 0.07) > 0.4 ? 1 : 0;
+        const gy = y + bob;
+        // 頭髮與頭型
+        px(ctx, x + 8, gy, 24, 14, '#1c1824');
+        px(ctx, x + 6, gy + 5, 28, 14, '#1c1824');
+        px(ctx, x + 10, gy + 2, 8, 3, '#3b344d');
+        // 臉部
+        px(ctx, x + 11, gy + 8, 18, 14, '#f5cfb0');
+        px(ctx, x + 11, gy + 19, 18, 3, '#e0b08d');
+        // 眼鏡與眼睛
+        px(ctx, x + 13, gy + 13, 5, 3, '#1f2336');
+        px(ctx, x + 22, gy + 13, 5, 3, '#1f2336');
+        px(ctx, x + 18, gy + 14, 4, 1, '#555c78');
+        // 臺灣法官法袍（黑底＋寶藍滾邊領）
+        px(ctx, x + 3, gy + 22, 34, 26, '#141722');
+        px(ctx, x + 12, gy + 22, 16, 26, '#1e2336');
+        // 寶藍色 V 領與袖邊
+        px(ctx, x + 11, gy + 22, 4, 16, '#2663d9');
+        px(ctx, x + 25, gy + 22, 4, 16, '#2663d9');
+        px(ctx, x + 15, gy + 36, 10, 4, '#2663d9');
+        // 白色領口
+        px(ctx, x + 16, gy + 22, 8, 7, '#eef3ff');
+        // 法槌動畫
+        const gavelUp = action === 'gavel' && Math.floor(tick / 4) % 2 === 0;
+        const hx = x + 34, hy = gavelUp ? gy + 14 : gy + 26;
+        px(ctx, hx, hy, 3, 12, '#8c5623');
+        px(ctx, hx - 4, hy - 3, 11, 5, '#c98838');
+        px(ctx, hx - 3, hy - 2, 9, 2, '#f5c778');
+      }
+
+      function drawClerkSprite(ctx, x, y, tick) {
+        const typeArm = Math.floor(tick / 8) % 2;
+        px(ctx, x + 6, y, 14, 10, '#2b2420');
+        px(ctx, x + 7, y + 6, 12, 9, '#f0c8a8');
+        px(ctx, x + 9, y + 9, 2, 2, '#1f1d24');
+        px(ctx, x + 15, y + 9, 2, 2, '#1f1d24');
+        px(ctx, x + 3, y + 15, 20, 18, '#262b3d');
+        px(ctx, x + 10, y + 15, 6, 6, '#e6ecf5');
+        // 鍵盤與打字手
+        px(ctx, x + 4, y + 27 + typeArm, 5, 3, '#f0c8a8');
+        px(ctx, x + 17, y + 28 - typeArm, 5, 3, '#f0c8a8');
+      }
+
+      function drawFighterSprite(ctx, x, y, isPlayer, tick, action, hp) {
+        let ox = 0, oy = Math.sin(tick * 0.08 + (isPlayer ? 0 : 2)) > 0.3 ? 1 : 0;
+        let flash = false;
+        if (action === 'attack') ox = isPlayer ? 18 : -18;
+        if (action === 'hit') {
+          ox = (Math.floor(tick / 2) % 2 === 0 ? -4 : 4);
+          flash = Math.floor(tick / 3) % 2 === 0;
+        }
+        const dx = x + ox, dy = y + oy;
+
+        // 腳下陰影
+        ctx.fillStyle = 'rgba(0,0,0,0.45)';
+        ctx.beginPath();
+        ctx.ellipse(dx + 22, y + 62, 18, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (flash) {
+          ctx.save();
+          ctx.globalAlpha = 0.75;
+        }
+
+        if (isPlayer) {
+          // 原告（深藍西裝、俐落黑髮、紅色領帶）
+          px(ctx, dx + 12, dy + 2, 20, 12, '#1c1d2b');
+          px(ctx, dx + 10, dy + 6, 22, 10, '#1c1d2b');
+          px(ctx, dx + 14, dy + 4, 8, 2, '#3d415e');
+          // 臉
+          px(ctx, dx + 14, dy + 10, 16, 13, '#f5ceb0');
+          px(ctx, dx + 22, dy + 14, 3, 3, '#171926');
+          px(ctx, dx + 28, dy + 14, 2, 3, '#171926');
+          // 西裝外套與白襯衫
+          px(ctx, dx + 8, dy + 23, 28, 25, '#1e3569');
+          px(ctx, dx + 10, dy + 23, 6, 25, '#2b4a8f');
+          px(ctx, dx + 20, dy + 23, 8, 12, '#eef4ff');
+          px(ctx, dx + 23, dy + 24, 3, 12, '#c92a2a');
+          // 攻擊時伸手指向前方
+          if (action === 'attack') {
+            px(ctx, dx + 34, dy + 26, 14, 6, '#1e3569');
+            px(ctx, dx + 48, dy + 27, 6, 4, '#f5ceb0');
+          } else {
+            px(ctx, dx + 33, dy + 27, 5, 16, '#182b57');
+            px(ctx, dx + 33, dy + 43, 5, 4, '#f5ceb0');
+          }
+          // 褲子與皮鞋
+          px(ctx, dx + 11, dy + 48, 9, 12, '#141c33');
+          px(ctx, dx + 24, dy + 48, 9, 12, '#141c33');
+          px(ctx, dx + 11, dy + 59, 11, 4, '#1f1612');
+          px(ctx, dx + 24, dy + 59, 11, 4, '#1f1612');
+        } else {
+          // 被告老王（灰棕西裝、金錶、微禿背頭、手拿本票）
+          px(ctx, dx + 12, dy + 3, 20, 9, '#3d342d');
+          px(ctx, dx + 16, dy + 2, 12, 4, '#5e5045');
+          // 臉（略微粗獷、眉頭深鎖）
+          px(ctx, dx + 12, dy + 10, 18, 14, '#e8bc96');
+          px(ctx, dx + 14, dy + 13, 5, 2, '#2b221c');
+          px(ctx, dx + 22, dy + 13, 5, 2, '#2b221c');
+          px(ctx, dx + 15, dy + 15, 3, 2, '#171512');
+          px(ctx, dx + 23, dy + 15, 3, 2, '#171512');
+          px(ctx, dx + 16, dy + 20, 7, 2, '#7d4c36');
+          // 灰褐格紋西裝＋金鍊領帶
+          px(ctx, dx + 6, dy + 24, 32, 24, '#544438');
+          px(ctx, dx + 28, dy + 24, 6, 24, '#6e5a4a');
+          px(ctx, dx + 15, dy + 24, 8, 12, '#f5efe1');
+          px(ctx, dx + 17, dy + 25, 3, 12, '#c98820');
+          // 手持本票或攻擊
+          if (action === 'attack') {
+            px(ctx, dx - 6, dy + 27, 14, 6, '#544438');
+            px(ctx, dx - 12, dy + 28, 6, 4, '#e8bc96');
+          } else {
+            px(ctx, dx + 3, dy + 28, 6, 15, '#42352b');
+            px(ctx, dx + 1, dy + 36, 9, 6, '#f5ecd2'); // 手上的小本票
+          }
+          // 褲子與皮鞋
+          px(ctx, dx + 10, dy + 48, 10, 12, '#2e2620');
+          px(ctx, dx + 24, dy + 48, 10, 12, '#2e2620');
+          px(ctx, dx + 8, dy + 59, 12, 4, '#1a120d');
+          px(ctx, dx + 22, dy + 59, 12, 4, '#1a120d');
+        }
+
+        if (flash) {
+          px(ctx, dx + 4, dy, 38, 62, 'rgba(255,255,255,0.65)');
+          ctx.restore();
+        }
+
+        // 低血量冒汗動畫
+        if (hp <= 40) {
+          const dropY = (tick % 24) * 0.45;
+          px(ctx, dx + (isPlayer ? 8 : 34), dy + 9 + dropY, 3, 5, '#7de2ff');
+          px(ctx, dx + (isPlayer ? 9 : 35), dy + 8 + dropY, 1, 2, '#ffffff');
+        }
+      }
+
+      /* -------------------------------------------------------------
+         繪製中央證物台（附斜向反光掃描特效）
+         ------------------------------------------------------------- */
+      function drawEvidenceCard(ctx, evidence, tick) {
+        const ex = 212, ey = 148, ew = 56, eh = 38;
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(ex + 3, ey + 3, ew, eh);
+        px(ctx, ex, ey, ew, eh, '#c99232');
+        px(ctx, ex + 2, ey + 2, ew - 4, eh - 4, '#f7efda');
+
+        if (evidence === 'note') {
+          px(ctx, ex + 5, ey + 5, ew - 10, 5, '#9e2626');
+          px(ctx, ex + 6, ey + 13, 30, 3, '#3b2d1d');
+          px(ctx, ex + 6, ey + 19, 42, 3, '#6e573e');
+          px(ctx, ex + 6, ey + 25, 24, 3, '#6e573e');
+          px(ctx, ex + 38, ey + 22, 10, 10, '#c92626');
+        } else if (evidence === 'bank') {
+          px(ctx, ex + 5, ey + 5, ew - 10, 6, '#1f4e8c');
+          for (let i = 0; i < 4; i++) {
+            px(ctx, ex + 6, ey + 14 + i * 5, 44, 2, i % 2 === 0 ? '#5c7ea8' : '#89a7cc');
+          }
+        } else if (evidence === 'report') {
+          px(ctx, ex + 5, ey + 5, ew - 10, 5, '#27633b');
+          px(ctx, ex + 6, ey + 13, 26, 3, '#2b241c');
+          px(ctx, ex + 6, ey + 19, 24, 3, '#574a3c');
+          // 放大鏡圖示
+          ctx.strokeStyle = '#1f4e8c';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(ex + 41, ey + 21, 6, 0, Math.PI * 2);
+          ctx.stroke();
+          px(ctx, ex + 45, ey + 26, 5, 3, '#6b451c');
+        } else if (evidence === 'slip') {
+          px(ctx, ex + 5, ey + 5, ew - 10, 5, '#2b6cb0');
+          px(ctx, ex + 6, ey + 14, 38, 3, '#2b4a70');
+          px(ctx, ex + 6, ey + 20, 30, 3, '#2b4a70');
+          px(ctx, ex + 32, ey + 24, 18, 7, '#2f855a');
+        }
+
+        // 斜向亮白掃描光澤
+        const sweep = (tick * 1.4) % 130;
+        if (sweep < ew + 20) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(ex + 2, ey + 2, ew - 4, eh - 4);
+          ctx.clip();
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.42)';
+          ctx.beginPath();
+          ctx.moveTo(ex + sweep - 12, ey);
+          ctx.lineTo(ex + sweep - 4, ey);
+          ctx.lineTo(ex + sweep - 16, ey + eh);
+          ctx.lineTo(ex + sweep - 24, ey + eh);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      /* -------------------------------------------------------------
+         動態渲染 480×220 法庭舞台
+         ------------------------------------------------------------- */
+      function renderStageFrame(ctx, pHp, eHp) {
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(bgCanvas, 0, 0);
+
+        // 1. 法官（坐於高位審判台後方）
+        drawJudgeSprite(ctx, 220, 58, anim.tick, anim.judgeAction);
+
+        // 2. 高位法台前板（遮住法官下半身）
+        px(ctx, 166, 98, 148, 38, '#542f1c');
+        px(ctx, 162, 94, 156, 6, '#875130');
+        px(ctx, 162, 94, 156, 2, '#ba7c4c');
+        px(ctx, 174, 104, 132, 24, '#3d2012');
+        px(ctx, 176, 106, 128, 20, '#4d2a18');
+        // 桌上麥克風與黃銅小燈
+        px(ctx, 224, 86, 2, 8, '#2b2d38');
+        px(ctx, 223, 84, 4, 3, '#4f556b');
+        px(ctx, 294, 82, 12, 12, '#216943');
+        px(ctx, 296, 84, 8, 5, '#47ba7d');
+
+        // 3. 書記官席（法台前方稍低處）
+        drawClerkSprite(ctx, 227, 108, anim.tick);
+        px(ctx, 198, 128, 84, 18, '#4a2917');
+        px(ctx, 195, 125, 90, 4, '#7a4729');
+        px(ctx, 218, 122, 16, 3, '#c9d4e8'); // 筆電螢幕反光
+
+        // 4. 原告席與被告席木桌
+        px(ctx, 22, 168, 82, 34, '#4d2b18');
+        px(ctx, 18, 164, 90, 5, '#855030');
+        px(ctx, 376, 168, 82, 34, '#4d2b18');
+        px(ctx, 372, 164, 90, 5, '#855030');
+
+        // 5. 原告與被告老王角色
+        drawFighterSprite(ctx, 108, 124, true, anim.tick, anim.playerAction, pHp);
+        drawFighterSprite(ctx, 326, 124, false, anim.tick, anim.enemyAction, eHp);
+
+        // 6. 中央證物
+        drawEvidenceCard(ctx, anim.evidence, anim.tick);
+
+        // 7. 體積光束與金色塵埃
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        const beam1 = ctx.createLinearGradient(68, 22, 190, 210);
+        beam1.addColorStop(0, 'rgba(255, 240, 195, 0.14)');
+        beam1.addColorStop(1, 'rgba(255, 220, 150, 0)');
+        ctx.fillStyle = beam1;
+        ctx.beginPath();
+        ctx.moveTo(46, 22);
+        ctx.lineTo(94, 22);
+        ctx.lineTo(220, 220);
+        ctx.lineTo(120, 220);
+        ctx.closePath();
+        ctx.fill();
+
+        const beam2 = ctx.createLinearGradient(412, 22, 290, 210);
+        beam2.addColorStop(0, 'rgba(255, 240, 195, 0.14)');
+        beam2.addColorStop(1, 'rgba(255, 220, 150, 0)');
+        ctx.fillStyle = beam2;
+        ctx.beginPath();
+        ctx.moveTo(386, 22);
+        ctx.lineTo(434, 22);
+        ctx.lineTo(360, 220);
+        ctx.lineTo(260, 220);
+        ctx.closePath();
+        ctx.fill();
+
+        dustMotes.forEach(m => {
+          m.x += m.vx;
+          m.y += m.vy;
+          if (m.x > W) m.x = 0;
+          if (m.y > 205) m.y = 18;
+          const a = 0.2 + 0.45 * (0.5 + 0.5 * Math.sin(anim.tick * 0.05 + m.phase));
+          ctx.fillStyle = `rgba(255, 236, 175, ${a.toFixed(2)})`;
+          ctx.fillRect(Math.floor(m.x), Math.floor(m.y), m.size, m.size);
+        });
+        ctx.restore();
+
+        // 8. 斬擊星芒粒子
+        for (let i = anim.particles.length - 1; i >= 0; i--) {
+          const p = anim.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life--;
+          if (p.life <= 0) {
+            anim.particles.splice(i, 1);
+          } else {
+            px(ctx, p.x, p.y, p.size, p.size, p.color);
+          }
+        }
+      }
+
+      /* -------------------------------------------------------------
+         128×128 PS1 32-bit 半身表情頭像繪製
+         ------------------------------------------------------------- */
+      function drawPortrait(speaker, mood = 'calm') {
+        pctx.imageSmoothingEnabled = false;
+        const g = pctx.createLinearGradient(0, 0, 0, 128);
+        if (speaker === 'laowang') {
+          g.addColorStop(0, '#421a20');
+          g.addColorStop(1, '#1a0a0d');
+        } else if (speaker === 'judge') {
+          g.addColorStop(0, '#1c2b59');
+          g.addColorStop(1, '#0b1229');
+        } else {
+          g.addColorStop(0, '#183770');
+          g.addColorStop(1, '#0a1630');
+        }
+        pctx.fillStyle = g;
+        pctx.fillRect(0, 0, 128, 128);
+
+        // 背景微斜紋
+        pctx.fillStyle = 'rgba(255,255,255,0.04)';
+        for (let i = -128; i < 256; i += 14) {
+          pctx.fillRect(i, 0, 4, 128);
+        }
+
+        if (speaker === 'system') {
+          // 系統提示：金色正義天秤徽章
+          px(pctx, 24, 20, 80, 88, '#3b240c');
+          px(pctx, 28, 24, 72, 80, '#c99232');
+          px(pctx, 32, 28, 64, 72, '#16285c');
+          px(pctx, 61, 38, 6, 46, '#ffe394');
+          px(pctx, 40, 46, 48, 5, '#ffe394');
+          px(pctx, 36, 62, 16, 7, '#ffd454');
+          px(pctx, 76, 62, 16, 7, '#ffd454');
+          px(pctx, 48, 84, 32, 6, '#ffe394');
+          return;
+        }
+
+        if (speaker === 'judge') {
+          // 短髮女法官（臺灣藍邊法袍）
+          px(pctx, 26, 16, 76, 56, '#1b1726');
+          px(pctx, 22, 32, 84, 48, '#1b1726');
+          px(pctx, 36, 20, 26, 8, '#3a324f');
+          // 臉部與頸部
+          px(pctx, 54, 74, 20, 16, '#e0b28f');
+          px(pctx, 36, 30, 56, 48, '#f7d3b5');
+          px(pctx, 36, 68, 56, 10, '#e5b895');
+          // 瀏海
+          px(pctx, 34, 24, 60, 14, '#1b1726');
+          px(pctx, 46, 36, 12, 6, '#1b1726');
+          // 眼鏡與眼睛
+          px(pctx, 42, 46, 18, 12, '#1c2033');
+          px(pctx, 44, 48, 14, 8, '#ffffff');
+          px(pctx, 49, 49, 6, 6, '#1c2033');
+          px(pctx, 68, 46, 18, 12, '#1c2033');
+          px(pctx, 70, 48, 14, 8, '#ffffff');
+          px(pctx, 75, 49, 6, 6, '#1c2033');
+          px(pctx, 60, 50, 8, 2, '#5a6382');
+          // 嘴部
+          px(pctx, 57, 67, 14, 3, '#b56c63');
+          // 法袍與寶藍領邊
+          px(pctx, 14, 88, 100, 40, '#141724');
+          px(pctx, 42, 88, 44, 40, '#22283d');
+          px(pctx, 38, 88, 10, 40, '#2968e3');
+          px(pctx, 80, 88, 10, 40, '#2968e3');
+          px(pctx, 52, 88, 24, 18, '#f0f4ff');
+          return;
+        }
+
+        if (speaker === 'laowang') {
+          // 被告老王
+          px(pctx, 30, 16, 68, 36, '#3d332c');
+          px(pctx, 40, 14, 48, 10, '#5c4e43');
+          px(pctx, 52, 74, 24, 16, '#cf9f7a');
+          px(pctx, 34, 28, 60, 50, '#ebbf99');
+          px(pctx, 34, 68, 60, 10, '#d4a37d');
+          // 粗眉（得意或慌張）
+          if (mood === 'sweat' || mood === 'panic') {
+            px(pctx, 40, 42, 16, 4, '#2b221c');
+            px(pctx, 72, 42, 16, 4, '#2b221c');
+          } else {
+            px(pctx, 40, 40, 18, 5, '#2b221c');
+            px(pctx, 70, 40, 18, 5, '#2b221c');
+          }
+          // 眼睛
+          px(pctx, 44, 48, 12, 8, '#ffffff');
+          px(pctx, 48, 49, 6, 6, '#1f1916');
+          px(pctx, 72, 48, 12, 8, '#ffffff');
+          px(pctx, 76, 49, 6, 6, '#1f1916');
+          // 鼻子與嘴
+          px(pctx, 61, 56, 6, 7, '#cfa07a');
+          if (mood === 'sweat' || mood === 'panic') {
+            px(pctx, 52, 66, 24, 8, '#6e322b');
+            px(pctx, 55, 68, 18, 4, '#f5efe6');
+            // 汗滴
+            px(pctx, 88, 36, 6, 12, '#7ce3ff');
+            px(pctx, 90, 34, 2, 4, '#ffffff');
+            px(pctx, 30, 46, 5, 10, '#7ce3ff');
+          } else {
+            px(pctx, 52, 67, 24, 4, '#7d4436');
+            px(pctx, 72, 65, 6, 3, '#7d4436');
+          }
+          // 灰褐西裝與金色領帶
+          px(pctx, 12, 88, 104, 40, '#544438');
+          px(pctx, 46, 88, 36, 40, '#f5efe1');
+          px(pctx, 59, 92, 10, 36, '#cc8b22');
+          return;
+        }
+
+        // 原告（你）
+        px(pctx, 28, 14, 72, 44, '#1b1d2e');
+        px(pctx, 38, 18, 28, 8, '#383d5e');
+        px(pctx, 54, 74, 20, 16, '#dfb18e');
+        px(pctx, 36, 30, 56, 48, '#f7d1b2');
+        px(pctx, 44, 46, 12, 8, '#ffffff');
+        px(pctx, 49, 47, 6, 6, '#181a29');
+        px(pctx, 72, 46, 12, 8, '#ffffff');
+        px(pctx, 77, 47, 6, 6, '#181a29');
+        px(pctx, 56, 67, 16, 3, '#b56c63');
+        px(pctx, 14, 88, 100, 40, '#1e366b');
+        px(pctx, 48, 88, 32, 40, '#eef4ff');
+        px(pctx, 60, 92, 8, 36, '#c92a2a');
+      }
+
+      function spawnBurst(x, y, color) {
+        for (let i = 0; i < 16; i++) {
+          const ang = (Math.PI * 2 * i) / 16;
+          const spd = 1.6 + Math.random() * 2.4;
+          anim.particles.push({
+            x, y,
+            vx: Math.cos(ang) * spd,
+            vy: Math.sin(ang) * spd,
+            size: Math.random() > 0.5 ? 4 : 2,
+            life: 16 + Math.floor(Math.random() * 10),
+            color
+          });
+        }
+      }
+
+      function loop() {
+        anim.tick++;
+        if (anim.actionTimer > 0) {
+          anim.actionTimer--;
+          if (anim.actionTimer === 0) {
+            anim.playerAction = 'idle';
+            anim.enemyAction = 'idle';
+            anim.judgeAction = 'idle';
+          }
+        }
+        if (GameState.screen === 'title') {
+          renderStageFrame(tsctx, 100, 100);
+        } else if (GameState.screen === 'prologue') {
+          renderPrologueFrame(prctx, anim.tick, GameState.prologueBeat);
+        } else if (GameState.screen === 'battle') {
+          renderStageFrame(sctx, GameState.playerHp, GameState.enemyHp);
+        }
+        requestAnimationFrame(loop);
+      }
+
+      buildCourtroomBackground();
+      buildPrologueDeskBackground();
+
+      return {
+        start: () => loop(),
+        setEvidence: (ev) => { anim.evidence = ev || 'note'; },
+        triggerAction: (who, action, frames = 30) => {
+          if (who === 'player') anim.playerAction = action;
+          if (who === 'enemy') anim.enemyAction = action;
+          if (who === 'judge') anim.judgeAction = action;
+          anim.actionTimer = frames;
+          if (who === 'enemy' && action === 'hit') spawnBurst(348, 150, '#ffe066');
+          if (who === 'player' && action === 'hit') spawnBurst(130, 150, '#ff5c5c');
+        },
+        drawPortrait
+      };
+    })();
+
+    /* =====================================================================
+       四、遊戲狀態與流程控制器
+       ===================================================================== */
+    const GameState = {
+      screen: 'title',
+      prologueBeat: 0,
+      prologueTyping: false,
+      prologueTimer: null,
+      routeId: null,
+      turn: 1,
+      playerHp: 100,
+      enemyHp: 100,
+      hasShield: false,
+      collectedEvidence: [],
+      battleLog: [],
+      dialogQueue: [],
+      dialogIndex: 0,
+      typingTimer: null,
+      isTyping: false,
+      currentFullText: '',
+      currentOptions: [],
+      focusedOption: 0,
+      optionsReady: false,
+      pendingAction: null
+    };
+
+    const dom = {
+      consoleFrame: document.getElementById('consoleFrame'),
+      screens: {
+        title: document.getElementById('screenTitle'),
+        prologue: document.getElementById('screenPrologue'),
+        dossier: document.getElementById('screenDossier'),
+        battle: document.getElementById('screenBattle'),
+        ending: document.getElementById('screenEnding')
+      },
+      prologueDialogBox: document.getElementById('prologueDialogBox'),
+      prologueText: document.getElementById('prologueText'),
+      prologueNextHint: document.getElementById('prologueNextHint'),
+      btnToDossier: document.getElementById('btnToDossier'),
+      prologueDots: document.querySelectorAll('.prologue-dot'),
+      folderCards: document.querySelectorAll('.folder-card'),
+      dossierReveal: document.getElementById('dossierReveal'),
+      revealTitle: document.getElementById('revealTitle'),
+      revealFact: document.getElementById('revealFact'),
+      playerHpText: document.getElementById('playerHpText'),
+      playerHpBar: document.getElementById('playerHpBar'),
+      playerHpDelay: document.getElementById('playerHpDelay'),
+      enemyHpText: document.getElementById('enemyHpText'),
+      enemyHpBar: document.getElementById('enemyHpBar'),
+      enemyHpDelay: document.getElementById('enemyHpDelay'),
+      shieldBadge: document.getElementById('shieldBadge'),
+      turnTag: document.getElementById('turnTag'),
+      btnCrtToggle: document.getElementById('btnCrtToggle'),
+      btnSoundToggle: document.getElementById('btnSoundToggle'),
+      stageWrap: document.getElementById('stageWrap'),
+      interludeOverlay: document.getElementById('interludeOverlay'),
+      interludeIcon: document.getElementById('interludeIcon'),
+      interludeText: document.getElementById('interludeText'),
+      dialogBox: document.getElementById('dialogBox'),
+      speakerName: document.getElementById('speakerName'),
+      dialogText: document.getElementById('dialogText'),
+      dialogNextHint: document.getElementById('dialogNextHint'),
+      optionsBox: document.getElementById('optionsBox'),
+      rulingBackdrop: document.getElementById('rulingBackdrop'),
+      rulingDelta: document.getElementById('rulingDelta'),
+      rulingBody: document.getElementById('rulingBody'),
+      btnRulingNext: document.getElementById('btnRulingNext'),
+      dossierBackdrop: document.getElementById('dossierBackdrop'),
+      modalRouteTitle: document.getElementById('modalRouteTitle'),
+      modalRouteFact: document.getElementById('modalRouteFact'),
+      modalBuffStatus: document.getElementById('modalBuffStatus'),
+      modalEvidenceList: document.getElementById('modalEvidenceList'),
+      verdictStamp: document.getElementById('verdictStamp'),
+      endingCaseNo: document.getElementById('endingCaseNo'),
+      endingScore: document.getElementById('endingScore'),
+      endingMainText: document.getElementById('endingMainText'),
+      routeBBonus: document.getElementById('routeBBonus'),
+      battleLogList: document.getElementById('battleLogList')
+    };
+
+    function switchScreen(name) {
+      GameState.screen = name;
+      Object.keys(dom.screens).forEach(k => {
+        dom.screens[k].classList.toggle('active', k === name);
+      });
+    }
+
+    function updateHUD() {
+      const pHp = Math.max(0, GameState.playerHp);
+      const eHp = Math.max(0, GameState.enemyHp);
+      dom.playerHpText.textContent = `${pHp}/100`;
+      dom.enemyHpText.textContent = `${eHp}/100`;
+      dom.playerHpBar.style.width = `${pHp}%`;
+      dom.playerHpDelay.style.width = `${pHp}%`;
+      dom.enemyHpBar.style.width = `${eHp}%`;
+      dom.enemyHpDelay.style.width = `${eHp}%`;
+
+      const getBarColor = (hp) => hp > 50 ? 'var(--hp-green)' : hp > 25 ? 'var(--hp-yellow)' : 'var(--hp-red)';
+      dom.playerHpBar.style.backgroundColor = getBarColor(pHp);
+      dom.enemyHpBar.style.backgroundColor = getBarColor(eHp);
+
+      dom.shieldBadge.classList.toggle('active', GameState.hasShield);
+      const routeLabel = GameState.routeId ? ROUTES[GameState.routeId].label : '';
+      dom.turnTag.textContent = `TURN ${GameState.turn}/4 ｜ ${routeLabel}`;
+    }
+
+    /* =====================================================================
+       序章三段式演出
+       ===================================================================== */
+    const PROLOGUE_BEATS = [
+      '某天傍晚，你回家打開信箱，發現一封法院寄來的雙掛號信……',
+      '拆開一看，竟是一份「本票裁定」！上面白紙黑字寫著：老王持有以你名義簽發的 300 萬元本票，法院已裁定准許強制執行。',
+      '所幸老王目前還沒拿去向執行處聲請查封你的財產，但危機隨時可能爆發。面對這張突如其來的 300 萬元本票，背後的真相究竟是……？'
+    ];
+
+    function startPrologue() {
+      GameState.prologueBeat = 0;
+      switchScreen('prologue');
+      playPrologueBeat();
+    }
+
+    function playPrologueBeat() {
+      const text = PROLOGUE_BEATS[GameState.prologueBeat];
+      dom.prologueDots.forEach((dot, i) => dot.classList.toggle('active', i === GameState.prologueBeat));
+      dom.prologueText.textContent = '';
+      dom.prologueNextHint.style.display = 'none';
+      dom.btnToDossier.style.display = 'none';
+
+      if (GameState.prologueBeat === 1) SoundFX.paper();
+      if (GameState.prologueBeat === 2) SoundFX.stamp();
+
+      GameState.prologueTyping = true;
+      clearInterval(GameState.prologueTimer);
+      let idx = 0;
+      GameState.prologueTimer = setInterval(() => {
+        idx++;
+        dom.prologueText.textContent = text.slice(0, idx);
+        if (idx % 2 === 1) SoundFX.blip('system');
+        if (idx >= text.length) finishPrologueTyping();
+      }, 25);
+    }
+
+    function finishPrologueTyping() {
+      clearInterval(GameState.prologueTimer);
+      GameState.prologueTyping = false;
+      dom.prologueText.textContent = PROLOGUE_BEATS[GameState.prologueBeat];
+      if (GameState.prologueBeat < PROLOGUE_BEATS.length - 1) {
+        dom.prologueNextHint.style.display = 'inline';
+      } else {
+        dom.btnToDossier.style.display = 'inline-flex';
+      }
+    }
+
+    function advancePrologue() {
+      if (GameState.prologueTyping) {
+        finishPrologueTyping();
+        return;
+      }
+      if (GameState.prologueBeat < PROLOGUE_BEATS.length - 1) {
+        SoundFX.confirm();
+        GameState.prologueBeat++;
+        playPrologueBeat();
+      } else {
+        openDossierSelection();
+      }
+    }
+
+    function openDossierSelection() {
+      clearInterval(GameState.prologueTimer);
+      GameState.prologueTyping = false;
+      SoundFX.confirm();
+      dom.folderCards.forEach(c => c.classList.remove('selected'));
+      dom.dossierReveal.classList.remove('visible');
+      GameState.routeId = null;
+      switchScreen('dossier');
+    }
+
+    /* =====================================================================
+       卷宗選擇與開始戰鬥
+       ===================================================================== */
+    function selectFolder(routeId) {
+      SoundFX.paper();
+      GameState.routeId = routeId;
+      dom.folderCards.forEach(c => c.classList.toggle('selected', c.dataset.route === routeId));
+      const r = ROUTES[routeId];
+      dom.revealTitle.textContent = r.name;
+      dom.revealFact.textContent = r.fact;
+      dom.dossierReveal.classList.add('visible');
+    }
+
+    function startBattle() {
+      GameState.turn = 1;
+      GameState.playerHp = 100;
+      GameState.enemyHp = 100;
+      GameState.bankRequested = false;
+      GameState.hasShield = false;
+      GameState.collectedEvidence = [];
+      GameState.battleLog = [];
+      switchScreen('battle');
+      updateHUD();
+      loadCurrentTurn();
+    }
+
+    function getCurrentTurnData() {
+      if (GameState.turn === 1) return TURN_ONE;
+      const turn = ROUTES[GameState.routeId].turns[GameState.turn];
+      if (GameState.routeId !== 'A' || GameState.turn !== 4 || GameState.bankRequested) return turn;
+      const options = turn.options.slice();
+      options[1] = { ...options[1], text: '請老王提出交付款項的證據。到目前為止，他只拿出我在借款前就簽好的本票。', ruling: '雙方都說簽票是為了借款。就爭執的現金交付，老王僅提出本票，本案欠缺其他足以證明交付的證據。' };
+      return { ...turn, evidence: 'note', evidenceLabel: '300 萬元本票原本', options,
+        dialogues: [{ ...turn.dialogues[0], text: '法官請老王說明現金來源，並提出當日交付款項的證據。老王仍只提出本票。' }, turn.dialogues[1]] };
+    }
+
+    function loadCurrentTurn() {
+      const data = getCurrentTurnData();
+      updateHUD();
+      PixelRenderer.setEvidence(data.evidence);
+      if (data.evidenceLabel && !GameState.collectedEvidence.includes(data.evidenceLabel)) {
+        GameState.collectedEvidence.push(data.evidenceLabel);
+      }
+
+      GameState.dialogQueue = data.dialogues;
+      GameState.dialogIndex = 0;
+      GameState.currentOptions = data.options;
+      GameState.focusedOption = 0;
+      GameState.optionsReady = false;
+
+      renderOptions(data.options);
+      dom.optionsBox.classList.add('locked');
+      playCurrentDialogue();
+    }
+
+    function renderOptions(options) {
+      dom.optionsBox.innerHTML = '';
+      options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn' + (idx === 0 ? ' focused' : '');
+        btn.innerHTML = `<span class="option-cursor">▶</span><span class="option-num">${idx + 1}.</span><span>${opt.text}</span>`;
+        btn.addEventListener('mouseenter', () => {
+          if (!GameState.optionsReady) return;
+          if (GameState.focusedOption !== idx) {
+            GameState.focusedOption = idx;
+            SoundFX.cursor();
+            updateOptionFocus();
+          }
+        });
+        btn.addEventListener('click', () => {
+          if (!GameState.optionsReady) return;
+          selectOption(idx);
+        });
+        dom.optionsBox.appendChild(btn);
+      });
+    }
+
+    function updateOptionFocus() {
+      const btns = dom.optionsBox.querySelectorAll('.option-btn');
+      btns.forEach((b, i) => b.classList.toggle('focused', i === GameState.focusedOption));
+    }
+
+    function playCurrentDialogue() {
+      const d = GameState.dialogQueue[GameState.dialogIndex];
+      dom.speakerName.textContent = d.name;
+      dom.dialogText.textContent = '';
+      dom.dialogNextHint.classList.remove('visible');
+
+      const mood = (d.speaker === 'laowang' && GameState.enemyHp <= 40) ? 'sweat' : (d.mood || 'calm');
+      PixelRenderer.drawPortrait(d.speaker, mood);
+
+      GameState.currentFullText = d.text;
+      GameState.isTyping = true;
+      clearInterval(GameState.typingTimer);
+
+      let i = 0;
+      GameState.typingTimer = setInterval(() => {
+        i++;
+        dom.dialogText.textContent = d.text.slice(0, i);
+        if (i % 2 === 1) SoundFX.blip(d.speaker);
+        if (i >= d.text.length) finishTyping();
+      }, 24);
+    }
+
+    function finishTyping() {
+      clearInterval(GameState.typingTimer);
+      GameState.isTyping = false;
+      dom.dialogText.textContent = GameState.currentFullText;
+      if (GameState.dialogIndex < GameState.dialogQueue.length - 1) {
+        dom.dialogNextHint.classList.add('visible');
+      } else {
+        GameState.optionsReady = true;
+        dom.optionsBox.classList.remove('locked');
+        updateOptionFocus();
+      }
+    }
+
+    function advanceDialogue() {
+      if (GameState.isTyping) {
+        finishTyping();
+        return;
+      }
+      if (GameState.dialogIndex < GameState.dialogQueue.length - 1) {
+        SoundFX.confirm();
+        GameState.dialogIndex++;
+        playCurrentDialogue();
+      }
+    }
+
+    function spawnFloatingDamage(target, text, typeClass) {
+      const el = document.createElement('div');
+      el.className = `dmg-float ${typeClass}`;
+      el.textContent = text;
+      el.style.left = target === 'enemy' ? '73%' : target === 'player' ? '27%' : '50%';
+      el.style.top = '48%';
+      dom.stageWrap.appendChild(el);
+      setTimeout(() => el.remove(), 1200);
+    }
+
+    function triggerShake() {
+      dom.consoleFrame.classList.remove('shake');
+      void dom.consoleFrame.offsetWidth;
+      dom.consoleFrame.classList.add('shake');
+    }
+
+    function renderSources(keys) {
+      const box = document.createElement('div');
+      box.className = 'ruling-sources';
+      for (const key of keys) {
+        const row = document.createElement('p');
+        row.textContent = (key === 'write' ? '法條　' : '實務　') + RULING_SOURCES[key];
+        box.appendChild(row);
+      }
+      return box;
+    }
+
+    function selectOption(idx) {
+      if (!GameState.optionsReady) return;
+      GameState.optionsReady = false;
+      dom.optionsBox.classList.add('locked');
+
+      const turnData = getCurrentTurnData();
+      const opt = turnData.options[idx];
+      const eff = opt.effect;
+      if (GameState.routeId === 'A' && GameState.turn === 3) GameState.bankRequested = idx === 2;
+
+      const sources = eff.grantShieldOnB && GameState.routeId === 'B'
+        ? [...opt.sources, 'stay'] : opt.sources;
+      let rulingText = opt.ruling;
+      let deltaLabel = '';
+      let deltaClass = 'neutral';
+      let logClass = 'log-neutral';
+
+      if (eff.target === 'enemy') {
+        SoundFX.hitEnemy();
+        PixelRenderer.triggerAction('player', 'attack', 28);
+        PixelRenderer.triggerAction('enemy', 'hit', 28);
+        triggerShake();
+        GameState.enemyHp = Math.max(0, GameState.enemyHp - eff.dmg);
+        spawnFloatingDamage('enemy', `-${eff.dmg}`, 'dmg-enemy');
+        deltaLabel = `老王 -${eff.dmg} HP`;
+        deltaClass = 'good';
+        logClass = 'log-good';
+      } else if (eff.target === 'player') {
+        SoundFX.hitPlayer();
+        PixelRenderer.triggerAction('enemy', 'attack', 28);
+        PixelRenderer.triggerAction('player', 'hit', 28);
+        triggerShake();
+        GameState.playerHp = Math.max(0, GameState.playerHp - eff.dmg);
+        spawnFloatingDamage('player', `-${eff.dmg}`, 'dmg-player');
+        deltaLabel = eff.retry ? `你 -${eff.dmg} HP（退回重選）` : `你 -${eff.dmg} HP`;
+        deltaClass = 'bad';
+        logClass = 'log-bad';
+      } else if (eff.target === 'advance') {
+        SoundFX.gavel();
+        PixelRenderer.triggerAction('judge', 'gavel', 28);
+        deltaLabel = '進入本案訴訟';
+        deltaClass = 'good';
+        logClass = 'log-good';
+        if (eff.grantShieldOnB && GameState.routeId === 'B') {
+          GameState.hasShield = true;
+          SoundFX.shield();
+          rulingText += '你已於裁定送達後20日內，以本票遭偽造為由，向原裁定法院提起確認之訴。日後遭執行時，向執行法院證明已如此起訴，法院應停止執行。執票人仍得聲請供擔保續行（非訟事件法第195條）。';
+          deltaLabel = '進入本案 ＋ 護盾獲得';
+        }
+      } else {
+        SoundFX.neutral();
+        spawnFloatingDamage('center', '雙方 HP 不變', 'dmg-zero');
+        deltaLabel = '雙方 HP 不變';
+        deltaClass = 'neutral';
+        logClass = 'log-neutral';
+      }
+
+      updateHUD();
+
+      GameState.battleLog.push({
+        turn: `TURN ${GameState.turn}｜${turnData.title}`,
+        delta: deltaLabel,
+        logClass,
+        sources,
+        ruling: rulingText
+      });
+
+      setTimeout(() => {
+        dom.rulingDelta.textContent = deltaLabel;
+        dom.rulingDelta.title = 'HP 為本回合遊戲計分';
+        dom.rulingDelta.className = `ruling-delta ${deltaClass}`;
+        dom.rulingBody.textContent = rulingText;
+        document.getElementById('rulingSources').replaceChildren(renderSources(sources));
+        dom.rulingBackdrop.classList.add('active');
+
+        GameState.pendingAction = () => {
+          if (GameState.playerHp <= 0) {
+            showEnding(false);
+            return;
+          }
+          if (eff.retry) {
+            GameState.optionsReady = true;
+            dom.optionsBox.classList.remove('locked');
+            updateOptionFocus();
+            return;
+          }
+          if (GameState.turn >= 4 || GameState.enemyHp <= 0) {
+            const isWin = eff.target === 'enemy' && GameState.enemyHp < GameState.playerHp;
+            showEnding(isWin);
+            return;
+          }
+          if (turnData.interludeAfter) {
+            playInterlude(turnData.interludeAfter, () => {
+              GameState.turn++;
+              loadCurrentTurn();
+            });
+          } else {
+            GameState.turn++;
+            loadCurrentTurn();
+          }
+        };
+      }, 420);
+    }
+
+    function closeRulingModal() {
+      SoundFX.confirm();
+      dom.rulingBackdrop.classList.remove('active');
+      const cb = GameState.pendingAction;
+      GameState.pendingAction = null;
+      if (cb) cb();
+    }
+
+    function playInterlude(interlude, onDone) {
+      SoundFX.paper();
+      dom.interludeIcon.textContent = interlude.icon;
+      dom.interludeText.textContent = interlude.text;
+      dom.interludeOverlay.classList.add('active');
+      setTimeout(() => {
+        dom.interludeOverlay.classList.remove('active');
+        onDone();
+      }, 1500);
+    }
+
+    function openDossierModal() {
+      SoundFX.paper();
+      const r = ROUTES[GameState.routeId];
+      dom.modalRouteTitle.textContent = r.name;
+      dom.modalRouteFact.textContent = r.fact;
+      dom.modalBuffStatus.textContent = GameState.hasShield
+        ? '你已於裁定送達後20日內，以本票遭偽造為由，向原裁定法院提起確認之訴。日後遭執行時，向執行法院證明已如此起訴，法院應停止執行。執票人仍得聲請供擔保續行（非訟事件法第195條）。'
+        : '無特殊程序護盾';
+      dom.modalEvidenceList.innerHTML = '';
+      GameState.collectedEvidence.forEach(ev => {
+        const span = document.createElement('span');
+        span.className = 'evidence-chip';
+        span.textContent = ev;
+        dom.modalEvidenceList.appendChild(span);
+      });
+      dom.dossierBackdrop.classList.add('active');
+    }
+
+    /* =====================================================================
+       結局：民事判決書打字機與蓋章結算
+       ===================================================================== */
+    function showEnding(isVictory) {
+      switchScreen('ending');
+      const r = ROUTES[GameState.routeId];
+      dom.endingCaseNo.textContent = `案由：確認本票債權不存在（${r.label}）`;
+      dom.endingScore.textContent = `最終心證：原告 ${Math.max(0, GameState.playerHp)} HP ／ 被告 ${Math.max(0, GameState.enemyHp)} HP`;
+      dom.verdictStamp.className = 'verdict-stamp' + (isVictory ? '' : ' defeat');
+      dom.verdictStamp.textContent = isVictory ? '一審勝訴' : '挑戰失敗';
+      const reasons = {
+        A: '老王未能證明已將三百萬元借款交付原告。',
+        B: '老王未能證明本票係原告簽發。',
+        C: '老王承認收到三百萬元，並承認沒有其他借款。他未能證明雙方約定利息。原告在到期前匯足本金，借款已清償。'
+      };
+      dom.routeBBonus.textContent = isVictory ? '判決理由　' + reasons[GameState.routeId] : '';
+      dom.routeBBonus.classList.toggle('visible', isVictory);
+      document.querySelector('.judgment-court').textContent = isVictory ? '臺灣地方法院民事判決' : '本局挑戰結束';
+      document.querySelector('.judgment-main-label').textContent = isVictory ? '主　文' : '本局結果';
+
+      dom.battleLogList.innerHTML = '';
+      GameState.battleLog.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'battle-log-item';
+        li.innerHTML = `
+          <div class="log-head">
+            <span>${item.turn}</span>
+            <span class="${item.logClass}">${item.delta}</span>
+          </div>
+          <div>${item.ruling}</div>
+        `;
+        li.appendChild(renderSources(item.sources));
+        dom.battleLogList.appendChild(li);
+      });
+
+      const verdictText = isVictory
+        ? '確認被告老王所持有本件面額新臺幣參佰萬元之本票，對原告之本票債權不存在。訴訟費用由被告負擔。'
+        : GameState.turn === 1 ? '你尚未提起確認之訴，本票裁定仍在。' : '本輪攻防未通過。請參考下方紀錄，再試一次。';
+
+      dom.endingMainText.textContent = '';
+      let i = 0;
+      const timer = setInterval(() => {
+        i++;
+        dom.endingMainText.textContent = verdictText.slice(0, i);
+        if (i % 2 === 1) SoundFX.blip('judge');
+        if (i >= verdictText.length) {
+          clearInterval(timer);
+          SoundFX.stamp();
+          dom.verdictStamp.classList.add('stamped');
+          setTimeout(() => {
+            if (isVictory) SoundFX.victory();
+            else SoundFX.defeat();
+          }, 260);
+        }
+      }, 28);
+    }
+
+    /* =====================================================================
+       五、事件綁定與鍵盤操控
+       ===================================================================== */
+    document.getElementById('btnStartGame').addEventListener('click', () => {
+      SoundFX.confirm();
+      startPrologue();
+    });
+
+    document.getElementById('btnSkipPrologue').addEventListener('click', openDossierSelection);
+    dom.prologueDialogBox.addEventListener('click', (e) => {
+      if (e.target.closest('#btnToDossier')) return;
+      advancePrologue();
+    });
+    dom.btnToDossier.addEventListener('click', openDossierSelection);
+
+    dom.folderCards.forEach(card => {
+      card.addEventListener('click', () => selectFolder(card.dataset.route));
+    });
+
+    document.getElementById('btnRandomRoute').addEventListener('click', () => {
+      const ids = ['A', 'B', 'C'];
+      selectFolder(ids[Math.floor(Math.random() * ids.length)]);
+    });
+
+    document.getElementById('btnConfirmRoute').addEventListener('click', () => {
+      if (!GameState.routeId) return;
+      SoundFX.confirm();
+      startBattle();
+    });
+
+    dom.dialogBox.addEventListener('click', advanceDialogue);
+    dom.btnRulingNext.addEventListener('click', closeRulingModal);
+    document.getElementById('btnDossierModal').addEventListener('click', openDossierModal);
+    document.getElementById('btnCloseDossier').addEventListener('click', () => {
+      SoundFX.confirm();
+      dom.dossierBackdrop.classList.remove('active');
+    });
+
+    dom.btnCrtToggle.addEventListener('click', () => {
+      SoundFX.cursor();
+      const on = dom.consoleFrame.classList.toggle('crt-enabled');
+      dom.btnCrtToggle.classList.toggle('active-toggle', on);
+    });
+
+    dom.btnSoundToggle.addEventListener('click', () => {
+      const on = SoundFX.toggle();
+      dom.btnSoundToggle.textContent = on ? '🔊 音效' : '🔇 靜音';
+      dom.btnSoundToggle.classList.toggle('active-toggle', on);
+    });
+
+    document.getElementById('btnReplayOther').addEventListener('click', openDossierSelection);
+    document.getElementById('btnBackTitle').addEventListener('click', () => {
+      SoundFX.confirm();
+      switchScreen('title');
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (dom.dossierBackdrop.classList.contains('active')) {
+        if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          dom.dossierBackdrop.classList.remove('active');
+        }
+        return;
+      }
+
+      if (dom.rulingBackdrop.classList.contains('active')) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          closeRulingModal();
+        }
+        return;
+      }
+
+      if (GameState.screen === 'title' && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        document.getElementById('btnStartGame').click();
+        return;
+      }
+      if (GameState.screen === 'prologue' && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        advancePrologue();
+        return;
+      }
+      if (GameState.screen !== 'battle') return;
+
+      if (!GameState.optionsReady) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          advanceDialogue();
+        }
+        return;
+      }
+
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        GameState.focusedOption = (GameState.focusedOption + 2) % 3;
+        SoundFX.cursor();
+        updateOptionFocus();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        GameState.focusedOption = (GameState.focusedOption + 1) % 3;
+        SoundFX.cursor();
+        updateOptionFocus();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectOption(GameState.focusedOption);
+      } else if (e.key === '1' || e.key === '2' || e.key === '3') {
+        e.preventDefault();
+        selectOption(parseInt(e.key, 10) - 1);
+      }
+    });
+
+    window.onload = () => {
+      PixelRenderer.start();
+    };
+  </script>
+</body>
+</html>
