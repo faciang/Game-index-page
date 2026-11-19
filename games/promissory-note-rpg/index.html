@@ -1418,10 +1418,10 @@
             ],
             options: [
               {
-                text: '指出老王既承認是消費借貸，依法律規定交付金錢的舉證責任完全在他，我方不需聲請任何調查，靜候判決即可。',
-                effect: { target: 'none', dmg: 0 },
+                text: '我沒收到那三百萬元。老王說他當天交了現金，請他提出證據。',
+                effect: { target: 'enemy', dmg: 35 },
                 sources: ["cash"],
-                ruling: '就消費借貸交付事實，發票人本不負舉證責任，不聲請調查並不生失權或扣分效果；惟未主動聲請調查客觀金流，無法進一步削弱對造陳述。'
+                ruling: '雙方都說簽票是為了借款。你否認收到款項，應由主張已交付借款的老王舉證。'
               },
               {
                 text: '我那天確實收到老王給的三百萬元，但那是我們之前合作案的分潤，跟這張本票無關，請法官傳喚合作夥伴來作證釐清。',
@@ -1430,24 +1430,20 @@
                 ruling: '你承認收到款項，與先前所說「沒收到現金」矛盾。至於這筆錢究竟是借款還是分潤，仍要看雙方提出的證據。'
               },
               {
-                text: '否認收過現金，除指出交付事實應由老王舉證外，並聲請函調老王當時的銀行提領紀錄，同時追問現金來源與搬運方式。',
-                effect: { target: 'enemy', dmg: 35 },
+                text: '老王沒有匯款紀錄，所以法院不能認定他交付過借款。',
+                effect: { target: 'player', dmg: 25 },
                 sources: ["cash"],
-                ruling: '依最高法院 105 年度台簡上字第 33 號判決意旨，執票人主張原因關係為消費借貸、發票人抗辯未收受借款時，應由執票人就借款交付事實負舉證責任；併聲請調閱對造銀行提領紀錄，可直接檢驗現金交付說詞是否合於經驗法則。'
+                ruling: '老王須證明已交付款項。如果主張是當面交付現金，仍可用其他證據證明。'
               }
-            ],
-            interludeAfter: {
-              icon: '🏦✉️',
-              text: '下次開庭，法官繼續調查現金的來源。'
-            }
+            ]
           },
           4: {
             title: '終局辯論',
-            evidence: 'bank',
-            evidenceLabel: '銀行帳戶函調明細',
+            evidence: 'note',
+            evidenceLabel: '300 萬元本票原本',
             dialogues: [
-              { speaker: 'system', name: '系統提示', mood: 'calm', text: '銀行函調結果顯示，老王在所稱交付日前後半年內，名下帳戶餘額從未超過 50 萬元，也無大額提領紀錄。' },
-              { speaker: 'laowang', name: '被告 老王', mood: 'sweat', text: '我拿的是家裡保險箱的現金。原告你有本事就證明你沒收過現金！' }
+              { speaker: 'judge', name: '法官', mood: 'calm', text: '被告，除了本票，你還有什麼證據可以證明當天交付現金？' },
+              { speaker: 'laowang', name: '被告 老王', mood: 'sweat', text: '錢是從家裡的保險箱拿的。我沒有請他簽收，也沒有別人在場，我手上就這張本票。' }
             ],
             options: [
               {
@@ -1457,10 +1453,10 @@
                 ruling: '事後勘驗住處保險箱無法證明案發當時是否存有 300 萬元現金，依《民事訴訟法》第 286 條但書無調查必要。'
               },
               {
-                text: '指出老王資力與提領軌跡明顯不符，300 萬現金說詞違反經驗法則，且交付事實舉證不足，請法官依全辯論意旨判決。',
+                text: '這張本票是我先簽的，上面沒有寫我已經收到借款。老王也沒有提出其他證據證明交付。',
                 effect: { target: 'enemy', dmg: 30 },
                 sources: ["cash"],
-                ruling: '執票人就消費借貸交付事實舉證不足，且無資金來源與提領軌跡，法院得依《民事訴訟法》第 222 條斟酌全辯論意旨及調查證據之結果，為不利於執票人之認定。'
+                ruling: '本案只有本票與老王的說法，尚不足以認定借款已交付。'
               },
               {
                 text: '既然雙方對有沒有給現金各執一詞、又沒有第三人在場，直接聲請法院安排兩造測謊，用科學儀器還原事實真相。',
@@ -2664,7 +2660,6 @@
       GameState.turn = 1;
       GameState.playerHp = 100;
       GameState.enemyHp = 100;
-      GameState.bankRequested = false;
       GameState.hasShield = false;
       GameState.collectedEvidence = [];
       GameState.battleLog = [];
@@ -2675,12 +2670,7 @@
 
     function getCurrentTurnData() {
       if (GameState.turn === 1) return TURN_ONE;
-      const turn = ROUTES[GameState.routeId].turns[GameState.turn];
-      if (GameState.routeId !== 'A' || GameState.turn !== 4 || GameState.bankRequested) return turn;
-      const options = turn.options.slice();
-      options[1] = { ...options[1], text: '請老王提出交付款項的證據。到目前為止，他只拿出我在借款前就簽好的本票。', ruling: '雙方都說簽票是為了借款。就爭執的現金交付，老王僅提出本票，本案欠缺其他足以證明交付的證據。' };
-      return { ...turn, evidence: 'note', evidenceLabel: '300 萬元本票原本', options,
-        dialogues: [{ ...turn.dialogues[0], text: '法官請老王說明現金來源，並提出當日交付款項的證據。老王仍只提出本票。' }, turn.dialogues[1]] };
+      return ROUTES[GameState.routeId].turns[GameState.turn];
     }
 
     function loadCurrentTurn() {
@@ -2812,7 +2802,6 @@
       const turnData = getCurrentTurnData();
       const opt = turnData.options[idx];
       const eff = opt.effect;
-      if (GameState.routeId === 'A' && GameState.turn === 3) GameState.bankRequested = idx === 2;
 
       const sources = eff.grantShieldOnB && GameState.routeId === 'B'
         ? [...opt.sources, 'stay'] : opt.sources;
