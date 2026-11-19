@@ -1367,6 +1367,7 @@
   "genuine": "士林地院114年度湖簡字第908號",
   "sample": "南投地院111年度訴字第57號",
   "appraisal": "法務部調查局《受理筆跡鑑定案件送鑑說明》",
+  "obstruction": "民事訴訟法第282條之1",
   "due": "苗栗地院113年度簡上字第70號",
   "offset": "臺北地院111年度重訴字第1128號",
   "order": "臺灣高等法院113年度重上字第484號",
@@ -1522,14 +1523,14 @@
               {
                 text: '本票是不是真正，應該由被告舉證。比對資料也請被告提出。',
                 effect: { target: 'player', dmg: 10 },
-                sources: ["genuine","sample"],
-                ruling: '本票真正仍由被告舉證。法院詢問的是可供比對的資料在哪裡。告知保管機構，法院就有線索可依民事訴訟法第359條向該機構調取。'
+                sources: ["genuine","obstruction"],
+                ruling: '本票是否真正，仍由被告舉證。法院現在問的是哪裡有比對資料。原告若為妨礙被告舉證，故意隱匿證據或使證據難以使用，仍可能構成證明妨礙。'
               },
               {
                 text: '銀行帳戶和公司資料都是我的個人隱私，我不想提供。',
                 effect: { target: 'player', dmg: 10 },
-                sources: ["sample"],
-                ruling: '如果擔心隱私，可以請法院把函調範圍限於比對所需的簽名與印鑑。本回合少了一條調查線索，本票是否真正仍須依證據判斷。'
+                sources: ["obstruction"],
+                ruling: '可以請法院把函調範圍限於比對所需的簽名與印鑑。若為妨礙被告使用證據而故意隱匿資料或使其難以使用，法院給雙方辯論機會後，得視情況認定該證據原本要證明的事實為真。'
               }
             ],
             interludeAfter: {
@@ -1543,7 +1544,7 @@
             evidence: 'report',
             evidenceLabel: '調查局筆跡與印文鑑定報告',
             dialogues: [
-              { speaker: 'system', name: '系統提示', mood: 'calm', text: '鑑定報告出爐——「票面印文與銀行留存印鑑不同；票面簽名過於簡略，無法判定是否為同一人所寫」。' },
+              { speaker: 'system', name: '系統提示', mood: 'calm', text: '鑑定報告出爐——「票面印文與銀行留存印鑑不同；可供比對的筆跡樣本不足，無法判定票面簽名是否出自原告」。' },
               { speaker: 'laowang', name: '被告 老王', mood: 'sweat', text: '法官，我還有一張對話截圖，上面有人說「我下週會還」。我沒有完整對話，但這句就是原告傳的。' }
             ],
             options: [
@@ -1557,10 +1558,10 @@
                 text: '鑑定沒有認定簽名是假的，我就不再爭執簽名了。',
                 effect: { target: 'player', dmg: 20 },
                 sources: ["genuine"],
-                ruling: '無法判定是否為同一人所寫，結果仍未能證明票上的簽名出自你本人。'
+                ruling: '比對樣本不足，鑑定無法判定簽名真偽。老王仍須用其他證據證明這張票是你簽發的。'
               },
               {
-                text: '鑑定看不出簽名是不是我寫的。截圖也看不出是誰傳的，或是在說哪一筆款項。目前還沒有證據足以認定這張票是我簽發的。',
+                text: '比對樣本不足，鑑定無法判定簽名是不是我寫的。截圖也看不出是誰傳的，或是在說哪一筆款項。目前還沒有證據足以認定這張票是我簽發的。',
                 effect: { target: 'enemy', dmg: 30 },
                 sources: ["genuine"],
                 ruling: '老王提出的資料未能證明本票是你簽發的。截圖欠缺帳號身分與對話脈絡，無法補足這一點。'
@@ -2790,7 +2791,7 @@
       box.className = 'ruling-sources';
       for (const key of keys) {
         const row = document.createElement('p');
-        row.textContent = (key === 'write' ? '法條　' : key === 'appraisal' ? '送鑑指引　' : '實務　') + RULING_SOURCES[key];
+        row.textContent = (key === 'write' || key === 'obstruction' ? '法條　' : key === 'appraisal' ? '送鑑指引　' : '實務　') + RULING_SOURCES[key];
         box.appendChild(row);
       }
       return box;
