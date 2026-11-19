@@ -1514,27 +1514,28 @@
             ],
             options: [
               {
-                text: '我那時在甲銀行開戶，有親簽也有留印鑑。我在當時任職的公司也親簽過人事文件，可以請法院向銀行和公司調取。',
+                text: '我在甲銀行開戶時有親簽，也有留印鑑。那段時間我也在公司簽過人事文件，法院可以向這兩處調取。',
                 effect: { target: 'enemy', dmg: 35 },
                 sources: ["sample","appraisal"],
                 ruling: '原告說明了資料在哪裡。法院可向銀行調取留存的簽名與印鑑，也可向公司調取當時的簽名原本，確認來源後送鑑。'
               },
               {
-                text: '我那時在甲銀行有帳戶。請法院調那段時間的交易明細，應該就能拿來比對簽名。',
+                text: '本票是不是真正，應該由被告舉證。比對資料也請被告提出。',
                 effect: { target: 'player', dmg: 10 },
-                sources: ["sample","appraisal"],
-                ruling: '要比對筆跡，應找有你親筆簽名的資料，例如銀行保存的開戶文件。只有交易日期和金額的明細無法比對簽名。'
+                sources: ["genuine","sample"],
+                ruling: '本票真正仍由被告舉證。法院詢問的是可供比對的資料在哪裡。告知保管機構，法院就有線索可依民事訴訟法第359條向該機構調取。'
               },
               {
-                text: '我在甲銀行開戶時有留下簽名和印鑑。請法院只調印鑑就好，簽名應該不用比對。',
+                text: '銀行帳戶和公司資料都是我的個人隱私，我不想提供。',
                 effect: { target: 'player', dmg: 10 },
-                sources: ["sample","appraisal"],
-                ruling: '票面上的簽名與印文都受到爭執。印鑑可供比對印文，留存的親筆簽名則可用來比對票上的簽名。'
+                sources: ["sample"],
+                ruling: '如果擔心隱私，可以請法院把函調範圍限於比對所需的簽名與印鑑。本回合少了一條調查線索，本票是否真正仍須依證據判斷。'
               }
             ],
             interludeAfter: {
               icon: '🔍📜',
-              text: '法院向保管機構調取比對資料並送鑑。數月後，鑑定報告送達法院。'
+              text: '法院向保管機構調取比對資料並送鑑。數月後，鑑定報告送達法院。',
+              withoutLead: '老王後來查到開戶銀行的名稱，向法院聲請函調。法院調取開戶資料送鑑後，收到鑑定報告。'
             }
           },
           4: {
@@ -2886,7 +2887,9 @@
             return;
           }
           if (turnData.interludeAfter) {
-            playInterlude(turnData.interludeAfter, () => {
+            const interlude = turnData.interludeAfter;
+            const text = eff.target === 'player' && interlude.withoutLead ? interlude.withoutLead : interlude.text;
+            playInterlude({ ...interlude, text }, () => {
               GameState.turn++;
               loadCurrentTurn();
             });
